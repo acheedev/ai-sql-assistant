@@ -1,5 +1,9 @@
 import re
 
+def strip_sql_comments(sql: str) -> str:
+    sql = re.sub(r'--[^\n]*', '', sql)           # single-line comments
+    sql = re.sub(r'/\*.*?\*/', '', sql, flags=re.DOTALL)  # block comments
+    return sql
 
 FORBIDDEN_KEYWORDS = {
     "INSERT",
@@ -12,6 +16,10 @@ FORBIDDEN_KEYWORDS = {
     "CREATE",
     "GRANT",
     "REVOKE",
+    "EXECUTE",
+    "EXEC",
+    "CALL",       # Oracle stored proc invocation
+    "BEGIN",      # PL/SQL anonymous block
 }
 
 def normalize_sql(sql: str) -> str:
@@ -27,6 +35,9 @@ def normalize_sql(sql: str) -> str:
     # Remove trailing semicolon
     if cleaned.endswith(";"):
         cleaned = cleaned[:-1]
+
+    # Strip sql comments
+    cleaned = strip_sql_comments(cleaned)
 
     return cleaned
 
