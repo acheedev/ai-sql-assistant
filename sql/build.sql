@@ -8,6 +8,8 @@
 @@ddl/basetables/order_line_item.sql
 @@ddl/basetables/shipment_header.sql
 @@ddl/basetables/inventory_balance.sql
+@@ddl/basetables/invoice_header.sql
+@@ddl/basetables/payment_transaction.sql
 --
 @@ddl/views/v_address_master.sql
 @@ddl/views/v_customer_account.sql
@@ -19,6 +21,11 @@
 @@ddl/views/v_order_line_item.sql
 @@ddl/views/v_shipment_header.sql
 @@ddl/views/v_inventory_balance.sql
+@@ddl/views/v_invoice_header.sql
+@@ddl/views/v_payment_transaction.sql
+@@ddl/views/v_order_detail.sql
+@@ddl/views/v_customer_order_summary.sql
+@@ddl/views/v_inventory_status.sql
 --
 @@ddl/semantic/semantic_object.sql
 @@ddl/semantic/semantic_object_alias.sql
@@ -29,6 +36,7 @@
 @@seed/seed_business_data.sql
 @@seed/seed_product_data.sql
 @@seed/seed_order_data.sql
+@@seed/seed_finance_data.sql
 --
 @@seed/seed_semantic_object.sql
 @@seed/seed_semantic_object_alias.sql
@@ -39,15 +47,11 @@
 @@seed/seed_semantic_object_alias_product.sql
 @@seed/seed_semantic_column_product.sql
 @@seed/seed_semantic_example_question_product.sql
+@@seed/seed_semantic_object_stage2.sql
+@@seed/seed_semantic_object_alias_stage2.sql
+@@seed/seed_semantic_column_stage2.sql
+@@seed/seed_semantic_example_question_stage2.sql
 
-
---
-
---
-
-
-
---
 
 
 pro    =========================================================
