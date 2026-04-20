@@ -72,7 +72,6 @@ The initial goal is a clean, understandable, testable system that can later evol
 ├── requirements.txt
 ├── sql
 │   ├── build.sql
-│   ├── build2.sql
 │   ├── ddl
 │   │   ├── basetables
 │   │   ├── semantic
@@ -152,13 +151,9 @@ The project also includes denormalized business views intended to provide more u
 
 Original/main build flow for Phase 1 foundation.
 
-### `sql/build2.sql`
-
-Expanded build flow for Stage 2 additions such as:
-
 * fulfillment/inventory seeds
 * finance seeds
-* Stage 2 semantic metadata
+* semantic metadata
 * business views
 
 If you eventually consolidate the scripts, this can become a single canonical build again. For now, the split is acceptable during active evolution.
@@ -192,7 +187,6 @@ Incremental semantic expansions:
 * product
 * order
 * operational
-* stage2
 
 This incremental approach keeps schema evolution understandable while the design is still being shaped.
 
@@ -320,7 +314,6 @@ Example:
 
 ```sql
 @sql/build.sql
-@sql/build2.sql
 ```
 
 If you later consolidate to a single build script, update this section accordingly.
