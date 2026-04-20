@@ -2,11 +2,23 @@
 @@ddl/basetables/status_code_lookup.sql
 @@ddl/basetables/organization.sql
 @@ddl/basetables/customer_account.sql
+@@ddl/basetables/product_master.sql
+@@ddl/basetables/product_sku.sql
+@@ddl/basetables/order_header.sql
+@@ddl/basetables/order_line_item.sql
+@@ddl/basetables/shipment_header.sql
+@@ddl/basetables/inventory_balance.sql
 --
 @@ddl/views/v_address_master.sql
 @@ddl/views/v_customer_account.sql
 @@ddl/views/v_organization.sql
 @@ddl/views/v_status_code_lookup.sql
+@@ddl/views/v_product_master.sql
+@@ddl/views/v_product_sku.sql
+@@ddl/views/v_order_header.sql
+@@ddl/views/v_order_line_item.sql
+@@ddl/views/v_shipment_header.sql
+@@ddl/views/v_inventory_balance.sql
 --
 @@ddl/semantic/semantic_object.sql
 @@ddl/semantic/semantic_object_alias.sql
@@ -15,11 +27,27 @@
 --
 @@seed/seed_reference_data.sql
 @@seed/seed_business_data.sql
+@@seed/seed_product_data.sql
+@@seed/seed_order_data.sql
 --
 @@seed/seed_semantic_object.sql
 @@seed/seed_semantic_object_alias.sql
 @@seed/seed_semantic_column.sql
 @@seed/seed_semantic_example_question.sql
+--
+@@seed/seed_semantic_object_product.sql
+@@seed/seed_semantic_object_alias_product.sql
+@@seed/seed_semantic_column_product.sql
+@@seed/seed_semantic_example_question_product.sql
+
+
+--
+
+--
+
+
+
+--
 
 
 pro    =========================================================

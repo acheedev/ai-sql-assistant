@@ -85,7 +85,7 @@ def merge_config(args: argparse.Namespace, config: dict) -> dict:
 
 
 def resolve_user_question(config: dict) -> str:
-    """Resolve the final user question from CLI input or sample config."""
+    """Resolve the final user question from CLI input or sample config"""
     if config.get("question"):
         return config["question"]
 
