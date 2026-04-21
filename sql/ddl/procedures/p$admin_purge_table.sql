@@ -8,7 +8,7 @@ BEGIN
       FROM user_tables
      WHERE table_name = upper(trim(p_table_name));
 
-    dbms_output.put_line('Deleting Table: ' || l_table_name);
+    dbms_output.put_line('Purging Table: ' || l_table_name);
     EXECUTE IMMEDIATE 'TRUNCATE TABLE ' || dbms_assert.sql_object_name(l_table_name);
 EXCEPTION
     WHEN no_data_found THEN

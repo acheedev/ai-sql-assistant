@@ -7,18 +7,19 @@
 @@drop_basetables.sql
 
 -- Build each basetable
+@@ddl/basetables/t_status_code_lookup.sql
 @@ddl/basetables/t_address_master.sql
-@@ddl/basetables/t_customer_account.sql
-@@ddl/basetables/t_inventory_balance.sql
-@@ddl/basetables/t_invoice_header.sql
-@@ddl/basetables/t_order_header.sql
-@@ddl/basetables/t_order_line_item.sql
 @@ddl/basetables/t_organization.sql
-@@ddl/basetables/t_payment_transaction.sql
+@@ddl/basetables/t_customer_account.sql
 @@ddl/basetables/t_product_master.sql
 @@ddl/basetables/t_product_sku.sql
+@@ddl/basetables/t_order_header.sql
+@@ddl/basetables/t_order_line_item.sql
 @@ddl/basetables/t_shipment_header.sql
-@@ddl/basetables/t_status_code_lookup.sql
+@@ddl/basetables/t_invoice_header.sql
+@@ddl/basetables/t_inventory_balance.sql
+@@ddl/basetables/t_payment_transaction.sql
+
 
 -- Drop all semtables
 @@drop_semtables.sql
@@ -26,8 +27,12 @@
 -- Build each semtable
 @@ddl/semantic/t_semantic_object.sql
 @@ddl/semantic/t_semantic_column.sql
-@@ddl/semantic/t_semantic_example_question.sql
 @@ddl/semantic/t_semantic_object_alias.sql
+@@ddl/semantic/t_semantic_example_question.sql
+
+
+-- Drop all views
+@@drop_views.sql
 
 -- Rebuild each view
 @@ddl/views/v_address_master.sql
