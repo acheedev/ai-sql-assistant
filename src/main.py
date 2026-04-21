@@ -1,6 +1,7 @@
 import argparse
 import csv
 import json
+import re
 from pathlib import Path
 from random import choice
 from dataclasses import dataclass, field
@@ -81,24 +82,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "-o", "--output",
         type=str,
-        default="test_case_results.csv",
-        help="Output CSV file path (default: test_case_results.csv)"
+        default="test_results",
+        help="Output directory for test results (default: test_results)"
     )
     return parser.parse_args()
 
 
 def merge_config(args: argparse.Namespace, config: dict) -> dict:
     merged = config.copy()
-
     for key, val in vars(args).items():
         if val is not None:
             merged[key] = val
-
     return merged
 
 
 def resolve_user_question(config: dict) -> str:
-    """Resolve the final user question from CLI input or sample config"""
+    """Resolve the final user question from CLI input or sample config."""
     if config.get("question"):
         return config["question"]
 
@@ -133,61 +132,59 @@ def load_questions_from_file(filepath: str) -> list[str]:
     return questions
 
 
-def write_results_to_csv(all_results: list[PipelineResult], output_path: str) -> None:
+def slugify(text: str, max_len: int = 50) -> str:
     """
-    Write all pipeline results to a CSV file.
-
-    Structure:
-    - One row per result row per question.
-    - If a question returns 5 data rows, that produces 5 CSV rows.
-    - Metadata columns: question, status, error_message, sql, row_number, explanation
-    - Data columns: all columns from the result rows (union across all questions)
-    - explanation only written on the first data row per question, blank on subsequent rows
-    - If a question has no data rows, one CSV row is written with the metadata and blank data columns
+    Convert a question string into a safe directory name fragment.
+    Lowercases, replaces spaces and special chars with underscores,
+    collapses runs of underscores, and truncates.
     """
-    # Collect all unique data column names across all results, preserving order
-    all_data_columns = []
-    seen_columns = set()
-    for r in all_results:
-        for row in r.results:
-            for col in row.keys():
-                if col not in seen_columns:
-                    all_data_columns.append(col)
-                    seen_columns.add(col)
+    slug = text.lower()
+    slug = re.sub(r"[^a-z0-9]+", "_", slug)
+    slug = re.sub(r"_+", "_", slug).strip("_")
+    return slug[:max_len]
 
-    # Fixed metadata columns that appear first
-    meta_columns = ["question", "status", "error_message", "sql", "row_number", "explanation"]
-    fieldnames = meta_columns + all_data_columns
 
-    with open(output_path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
-        writer.writeheader()
+def write_test_result(
+    result: PipelineResult,
+    test_num: int,
+    output_dir: Path
+) -> None:
+    """
+    Write one test result into its own subdirectory:
+      output_dir/test_NNN_<slug>/summary.log
+      output_dir/test_NNN_<slug>/data.csv  (only if rows exist)
+    """
+    slug = slugify(result.question)
+    test_dir = output_dir / f"test_{test_num:03d}_{slug}"
+    test_dir.mkdir(parents=True, exist_ok=True)
 
-        for result in all_results:
-            if result.results:
-                for i, data_row in enumerate(result.results):
-                    csv_row = {
-                        "question":      result.question,
-                        "status":        result.status.value,
-                        "error_message": result.message if result.status != Status.OK else "",
-                        "sql":           result.sql if i == 0 else "",
-                        "row_number":    i + 1,
-                        "explanation":   result.explanation if i == 0 else "",
-                    }
-                    # Merge in the actual data columns
-                    csv_row.update(data_row)
-                    writer.writerow(csv_row)
-            else:
-                # No data rows — write one row with just metadata
-                csv_row = {
-                    "question":      result.question,
-                    "status":        result.status.value,
-                    "error_message": result.message,
-                    "sql":           result.sql,
-                    "row_number":    0,
-                    "explanation":   result.explanation,
-                }
-                writer.writerow(csv_row)
+    # --- summary.log ---
+    log_path = test_dir / "summary.log"
+    with open(log_path, "w", encoding="utf-8") as f:
+        f.write(f"question   : {result.question}\n")
+        f.write(f"status     : {result.status.value}\n")
+        f.write(f"is_safe    : {result.is_safe}\n")
+        f.write(f"row_count  : {len(result.results)}\n")
+
+        if result.message:
+            f.write(f"message    : {result.message}\n")
+
+        f.write("\n--- SQL ---\n")
+        f.write(result.sql if result.sql else "(none)\n")
+
+        if result.explanation:
+            f.write("\n--- explanation ---\n")
+            f.write(result.explanation)
+            f.write("\n")
+
+    # --- data.csv (only if rows returned) ---
+    if result.results:
+        data_path = test_dir / "data.csv"
+        fieldnames = list(result.results[0].keys())
+        with open(data_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(result.results)
 
 
 def main() -> None:
@@ -206,21 +203,24 @@ def main() -> None:
                 print("No questions found in file. Exiting.")
                 return
 
+            output_dir = Path(args.output)
+            output_dir.mkdir(parents=True, exist_ok=True)
+
             print(f"Loaded {len(questions)} questions from {args.file}")
-            print(f"Output will be written to: {args.output}\n")
+            print(f"Writing results to: {output_dir}/\n")
 
             # Load semantic schema once for the whole batch
             semantic_schema = get_semantic_schema()
 
-            all_results = []
             for i, question in enumerate(questions, 1):
-                print(f"[{i}/{len(questions)}] {question}")
+                print(f"[{i:03d}/{len(questions)}] {question}")
                 result = run_pipeline(question, semantic_schema)
-                all_results.append(result)
-                print(f"  -> {result.status.value} | {len(result.results)} rows")
+                write_test_result(result, i, output_dir)
+                status_label = result.status.value
+                row_info = f"{len(result.results)} rows" if result.status == Status.OK else result.message[:60]
+                print(f"         -> {status_label} | {row_info}")
 
-            write_results_to_csv(all_results, args.output)
-            print(f"\nDone. Results written to {args.output}")
+            print(f"\nDone. {len(questions)} tests written to {output_dir}/")
             return
 
         # --- Single question mode ---
@@ -310,7 +310,6 @@ def validate_sql(sql: str) -> tuple[bool, str]:
     """Return whether the SQL is safe, plus the validation reason."""
     if sql is None or sql == "" or sql == "CANNOT_ANSWER":
         return False, "Query cancelled or could not be answered."
-
     return is_safe_sql(sql)
 
 
@@ -321,7 +320,6 @@ def execute_query(result: PipelineResult) -> PipelineResult:
     except Exception as exc:
         result.status = Status.DB_ERROR
         result.message = f"Database execution failed: {exc}"
-
     return result
 
 
@@ -337,7 +335,6 @@ def generate_explanation(result: PipelineResult) -> PipelineResult:
     except Exception as exc:
         result.status = Status.EXPLANATION_ERROR
         result.message = f"Explanation generation failed: {exc}"
-
     return result
 
 
