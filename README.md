@@ -220,11 +220,3 @@ tests/test_results/
 **Portable by design** — the semantic layer abstraction is database-agnostic. The Oracle-specific pieces (`db.py`, SQL dialect rules in the prompt) are isolated for future portability to PostgreSQL, SQL Server, and others.
 
 **Production-oriented patterns** — explicit status enums, structured result objects, gated pipeline stages, environment-based credential management. This isn't a notebook experiment.
-
----
-
-## Certifications
-
-- Oracle Certified PL/SQL Developer – Associate
-- Oracle Certified SQL Expert
-- AWS Certified Solutions Architect – Associate
