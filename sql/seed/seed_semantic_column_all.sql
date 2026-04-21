@@ -257,7 +257,7 @@ INSERT INTO t_semantic_column (
            5 );
 COMMIT;
 
-UPDATE semantic_column
+UPDATE t_semantic_column
    SET
     is_identifier = 'Y'
  WHERE object_name = 'V_SHIPMENT_HEADER'
@@ -669,7 +669,7 @@ INSERT INTO t_semantic_column (
            'PRODUCT_ID',
            'Product ID',
            'N',
-           'N',
+           'Y',
            'N',
            'Y',
            80 );
