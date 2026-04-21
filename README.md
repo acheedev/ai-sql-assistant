@@ -1,378 +1,230 @@
 # AI SQL Assistant
 
-AI-assisted SQL querying system for Oracle that translates natural language into SQL, validates it for safety, executes it against the database, and returns a plain-English explanation of the results.
+A natural language SQL querying system that translates plain-English business questions into validated, executable SQL — and explains the results in plain English.
 
-This project is being built as a portfolio-quality proof of concept with production-oriented design choices:
-- controlled AI-visible schema surface
-- deterministic SQL validation before execution
-- explicit pipeline state handling in Python
-- 1:1 database view layer plus business views
-- lean semantic metadata for schema selection and prompt grounding
+Built with Python and Oracle, grounded by a hand-curated semantic metadata layer that gives the AI controlled, governed access to your database schema.
 
 ---
 
-## Current Status
+## What It Does
 
-The project currently includes:
+You ask a question. It generates SQL, validates it for safety, executes it, and explains what came back.
 
-### Python application layer
-- CLI-driven natural language input
-- prompt construction for SQL generation
-- LLM-driven SQL generation
-- SQL normalization and safety validation
-- Oracle execution
-- LLM-generated explanation of results
-- explicit status-driven pipeline orchestration using a structured result object
+```
+$ python src/main.py --question "Show what has shipped but not been paid"
 
-### Database layer
-- 12-table Phase 1 starter schema
-- mandatory 1:1 views for every base table
-- business views for richer AI-facing query surfaces
-- lean 4-table semantic metadata model
-- repeatable build scripts and seed data
+sql:
+  select sh.shipment_number, sh.shipment_date, sh.status_code as shipment_status,
+         inv.invoice_number, inv.status_code as invoice_status, inv.invoice_total_amount,
+         pay.payment_reference, pay.status_code as payment_status
+  from v_shipment_header sh
+  join v_invoice_header inv on sh.order_id = inv.order_id
+  left join v_payment_transaction pay on inv.invoice_id = pay.invoice_id
+  where sh.status_code in ('IN_TRANSIT', 'DELIVERED')
+  and (pay.invoice_id is null or pay.status_code != 'COMPLETED')
+  order by sh.shipment_date desc
 
-This is now at the point where the next major step is to return to Python testing and run real end-to-end natural-language questions against the expanded schema.
+row_count: 3
+
+explanation:
+  - Three shipments have been dispatched but remain unpaid.
+  - One payment is pending, another failed, and one shipment has no payment record at all.
+  - The highest outstanding invoice is $1,578 for a delivered shipment — the most significant receivables risk.
+```
 
 ---
 
-## Design Goals
+## What Makes It Different
 
-### 1. Controlled AI surface
-The model should not reason directly over arbitrary base tables without structure.
-The system exposes a controlled query surface through:
-- 1:1 views
-- business views
-- semantic metadata
+Most natural language to SQL systems throw AI at a raw database schema and hope for the best. This one doesn't.
 
-### 2. Deterministic safety boundary
-LLM output is treated as untrusted until it passes deterministic checks.
-Validation enforces:
-- query-only access
-- single-statement restrictions
-- no DDL
-- no DML
-- other safety/shape constraints
+The core design principle: **use AI for flexible interpretation, but surround it with deterministic control layers.**
 
-### 3. Explicit pipeline state
-The Python pipeline uses a structured result object and a status enum so failures are represented explicitly and later stages are gated cleanly.
+### Semantic Metadata Layer
 
-### 4. Portfolio-quality first
-The initial goal is a clean, understandable, testable system that can later evolve toward a more production-oriented implementation.
+The system doesn't expose raw tables to the AI. Instead, it reads from four semantic tables that a database administrator controls:
+
+| Table | Purpose |
+|---|---|
+| `t_semantic_object` | Which views the AI can see, ranked by preference |
+| `t_semantic_column` | Which columns are identifiers, human-readable, filterable, or default |
+| `t_semantic_object_alias` | Natural language synonyms for object names |
+| `t_semantic_example_question` | Few-shot SQL examples that ground the LLM |
+
+This means the AI sees a curated, governed surface — not your raw schema. You control what it can query, how it joins, and what status values are valid.
+
+### Deterministic Safety Validation
+
+LLM output is treated as untrusted until it passes a deterministic validator:
+- Must be a `SELECT` or `WITH` statement
+- No DML (`INSERT`, `UPDATE`, `DELETE`, `MERGE`)
+- No DDL (`DROP`, `ALTER`, `TRUNCATE`, `CREATE`)
+- No multiple statements (no semicolons)
+- No stored procedure invocation (`EXEC`, `EXECUTE`, `CALL`, `BEGIN`)
+- Comment stripping before validation to prevent keyword hiding
+
+### View Layer
+
+Every base table has a mandatory 1:1 view. The AI queries views only — never base tables directly. This gives you:
+- Schema change isolation (rename a column in the base table, update the view, AI queries keep working)
+- Row-level security hooks if needed
+- A clean separation between storage and query surface
+
+### Explicit Pipeline State
+
+The Python pipeline uses a `Status` enum and a `PipelineResult` dataclass. Each stage either enriches the result or stops the pipeline with an explicit failure reason — no silent failures, no ambiguous state.
+
+```
+user question
+  → build SQL prompt (semantic layer injected)
+  → LLM generates SQL
+  → normalize SQL
+  → validate SQL (deterministic)
+  → execute against Oracle
+  → build explanation prompt
+  → LLM explains results in plain English
+```
 
 ---
 
 ## Repository Layout
 
-```text
+```
 .
-├── LICENSE
-├── README.md
-├── doc
-│   └── ai_sql_assistant_design_spec.docx
-├── requirements.txt
-├── sql
-│   ├── build.sql
-│   ├── ddl
-│   │   ├── basetables
-│   │   ├── semantic
-│   │   └── views
-│   └── seed
-├── src
-│   ├── config.json
-│   ├── db.py
-│   ├── explain.py
-│   ├── llm.py
-│   ├── llm_exceptions.py
-│   ├── main.py
-│   ├── prompt.py
-│   └── validator.py
-````
-
----
-
-## SQL Structure
-
-### Base tables
-
-The Phase 1 schema currently includes the following base tables:
-
-* `address_master`
-* `customer_account`
-* `inventory_balance`
-* `invoice_header`
-* `order_header`
-* `order_line_item`
-* `organization`
-* `payment_transaction`
-* `product_master`
-* `product_sku`
-* `shipment_header`
-* `status_code_lookup`
-
-### Semantic metadata tables
-
-The lean semantic model includes:
-
-* `semantic_object`
-* `semantic_object_alias`
-* `semantic_column`
-* `semantic_example_question`
-
-### 1:1 views
-
-Each base table has a mandatory 1:1 view:
-
-* `v_address_master`
-* `v_customer_account`
-* `v_inventory_balance`
-* `v_invoice_header`
-* `v_order_header`
-* `v_order_line_item`
-* `v_organization`
-* `v_payment_transaction`
-* `v_product_master`
-* `v_product_sku`
-* `v_shipment_header`
-* `v_status_code_lookup`
-
-### Business views
-
-The project also includes denormalized business views intended to provide more useful AI-facing query surfaces:
-
-* `v_order_detail`
-* `v_customer_order_summary`
-* `v_inventory_status`
-
----
-
-## Current SQL Build Files
-
-### `sql/build.sql`
-
-Original/main build flow for Phase 1 foundation.
-
-* fulfillment/inventory seeds
-* finance seeds
-* semantic metadata
-* business views
-
-If you eventually consolidate the scripts, this can become a single canonical build again. For now, the split is acceptable during active evolution.
-
----
-
-## Seed Data
-
-The repository includes seed scripts for:
-
-### Foundation/reference/business data
-
-* `seed_reference_data.sql`
-* `seed_business_data.sql`
-* `seed_product_data.sql`
-* `seed_order_data.sql`
-* `seed_shipment_inventory_data.sql`
-* `seed_finance_data.sql`
-
-### Semantic metadata
-
-Base semantic seeds:
-
-* `seed_semantic_object.sql`
-* `seed_semantic_object_alias.sql`
-* `seed_semantic_column.sql`
-* `seed_semantic_example_question.sql`
-
-Incremental semantic expansions:
-
-* product
-* order
-* operational
-
-This incremental approach keeps schema evolution understandable while the design is still being shaped.
-
----
-
-## Python Application Structure
-
-### `src/main.py`
-
-Application entry point.
-
-Responsibilities:
-
-* parse CLI arguments
-* load configuration
-* resolve the user question
-* orchestrate the pipeline
-* print the final pipeline result
-
-### `src/prompt.py`
-
-Builds the prompt used for SQL generation.
-
-### `src/llm.py`
-
-Contains the LLM call wrapper.
-
-### `src/llm_exceptions.py`
-
-Custom exception types for LLM-related failures.
-
-### `src/validator.py`
-
-Normalizes and validates generated SQL before execution.
-
-### `src/db.py`
-
-Executes validated SQL against Oracle.
-
-### `src/explain.py`
-
-Builds the explanation prompt used to summarize SQL results.
-
-### `src/config.json`
-
-Contains configuration such as:
-
-* sample questions
-* default question mode
-* test mode behavior
-
----
-
-## Python Pipeline
-
-High-level runtime flow:
-
-```text
-user question
-  -> build SQL prompt
-  -> LLM generates SQL
-  -> normalize SQL
-  -> validate SQL
-  -> execute against Oracle
-  -> build explanation prompt
-  -> LLM explains results
+├── src/
+│   ├── main.py          # Entry point, pipeline orchestration, test runner
+│   ├── prompt.py        # Schema formatter and SQL generation prompt
+│   ├── db.py            # Oracle connection, query execution, semantic layer reader
+│   ├── llm.py           # OpenAI API wrapper
+│   ├── validator.py     # Deterministic SQL safety validation
+│   ├── explain.py       # Result explanation prompt
+│   └── llm_exceptions.py
+├── sql/
+│   ├── ddl/
+│   │   ├── basetables/  # 12 base table definitions (t_ prefix)
+│   │   ├── views/       # 15 view definitions (v_ prefix)
+│   │   └── semantic/    # 4 semantic metadata table definitions
+│   ├── seed/
+│   │   ├── seed_oltp_all.sql              # Status codes, orgs, customers, products, orders, finance, shipments, inventory
+│   │   ├── seed_semantic_object_all.sql   # View registrations with descriptions
+│   │   ├── seed_semantic_column_all.sql   # Column metadata and identifier flags
+│   │   ├── seed_semantic_object_alias_all.sql
+│   │   └── seed_semantic_example_question_all.sql
+│   ├── build_obj.sql    # Builds all objects in dependency order
+│   └── build_seed.sql   # Seeds all data in dependency order
+├── tests/
+│   ├── test_questions.txt   # 25 test questions for batch testing
+│   └── testdb.py
+└── .env.example
 ```
 
-The pipeline is driven by a structured result object with a status enum.
-Each stage may:
+---
 
-* enrich the result
-* update its status
-* stop downstream processing if status is no longer `OK`
+## Demo Schema
 
-This keeps the control flow explicit and makes failures easier to reason about.
+The included schema is a B2B order management system — realistic enough to exercise complex queries, simple enough to understand quickly.
+
+**12 base tables:** `address_master`, `customer_account`, `organization`, `product_master`, `product_sku`, `order_header`, `order_line_item`, `invoice_header`, `payment_transaction`, `shipment_header`, `inventory_balance`, `status_code_lookup`
+
+**15 views:** 1:1 views for every base table plus three denormalized business views — `v_order_detail`, `v_customer_order_summary`, `v_inventory_status`
+
+**Domain-specific status codes** across five lifecycle domains:
+
+| Domain | Values |
+|---|---|
+| Orders | `DRAFT`, `CONFIRMED`, `FULFILLED`, `CANCELLED`, `CLOSED` |
+| Shipments | `PENDING`, `IN_TRANSIT`, `DELIVERED`, `RETURNED`, `CANCELLED` |
+| Invoices | `ISSUED`, `PAID`, `OVERDUE`, `CANCELLED`, `VOID` |
+| Payments | `PENDING`, `COMPLETED`, `FAILED`, `REFUNDED` |
+| General | `ACTIVE`, `INACTIVE`, `PENDING`, `SUSPENDED`, `CLOSED`, `ARCHIVED` |
+
+**Test scenarios baked into the seed data:**
+- Fulfilled orders with paid invoices and delivered shipments
+- In-transit shipments with issued but unpaid invoices
+- An overdue invoice with a failed payment attempt
+- A fulfilled order with a partially paid invoice and a pending payment
+- A cancelled order with a returned shipment
+- Draft and confirmed orders with no shipment or invoice yet
+- Low stock and out-of-stock inventory across two warehouse locations
 
 ---
 
-## Semantic Metadata Strategy
+## Setup
 
-The semantic layer is intentionally lean and deterministic.
+### Requirements
 
-It is used to support:
+- Python 3.10+
+- Oracle database (19c or later)
+- OpenAI API key
 
-* AI-visible object selection
-* alias matching
-* column prioritization
-* example-question grounding
+### Install dependencies
 
-Rather than introducing vector search or heavy orchestration early, the project relies on:
+```bash
+pip install -r requirements.txt
+```
 
-* object-level ranking
-* aliases
-* human-readable columns
-* curated example questions
+### Configure environment
 
-This keeps the system understandable and testable while still providing meaningful schema guidance.
+```bash
+cp .env.example .env
+# Edit .env with your DB credentials and OpenAI API key
+```
 
----
+### Build the database
 
-## Example Business Questions This Schema Supports
-
-The current schema and views are intended to support questions like:
-
-* Show the top customers by total order amount
-* List customers with no orders
-* Show recent orders
-* Show order detail by customer
-* Show total quantity ordered by SKU
-* Show low stock items by location
-* Show recent shipments
-* Show invoices by due date
-* Show payments by method
-
-These are the kinds of prompts that will be used in the next round of Python testing.
-
----
-
-## How to Build the Database
-
-Run the SQL build scripts in SQL*Plus, SQLcl, or your preferred Oracle client.
-
-Example:
+Run in SQL*Plus, SQLcl, or your preferred Oracle client:
 
 ```sql
-@sql/build.sql
+@sql/build_obj.sql
+@sql/build_seed.sql
 ```
-
-If you later consolidate to a single build script, update this section accordingly.
 
 ---
 
-## How to Run the Python Tool
+## Usage
 
-From the project root:
+### Single question
 
 ```bash
-python src/main.py
+python src/main.py --question "Show overdue invoices"
+python src/main.py --question "Show top 5 customers by order amount"
+python src/main.py --question "Show what has shipped but not been paid"
 ```
 
-Or with explicit arguments, depending on how you are currently testing:
+### Batch test mode
 
 ```bash
-python src/main.py --test_mode --question_type valid
-python src/main.py --question "Show top customers by total order amount"
+python src/main.py -f tests/test_questions.txt -o tests/test_results
+```
+
+Each question gets its own directory under `test_results/`:
+
+```
+tests/test_results/
+  test_001_show_overdue_invoices/
+    summary.log    ← question, status, SQL, row count, explanation
+    data.csv       ← actual result rows (only written if rows exist)
+  test_002_show_top_5_customers_by_order_amount/
+    summary.log
+    data.csv
 ```
 
 ---
 
-## Environment / Setup Notes
+## Design Goals
 
-This project expects:
+**Controlled AI surface** — the model reasons over a curated semantic layer, not raw schema. `include_in_ai`, `preferred_for_ai`, `is_identifier`, `is_filterable`, and `is_human_readable` flags give the DBA precise control over what the AI sees and how it behaves.
 
-* Oracle database access
-* Python environment with dependencies from `requirements.txt`
-* LLM API credentials/configuration available to the Python layer
+**Deterministic safety boundary** — SQL validation is not AI-assisted. It's a regex-based filter that runs before any execution. The LLM cannot bypass it.
 
-Database connectivity and model/API configuration are handled in the Python source and local configuration/environment setup.
+**Portable by design** — the semantic layer abstraction is database-agnostic. The Oracle-specific pieces (`db.py`, SQL dialect rules in the prompt) are isolated for future portability to PostgreSQL, SQL Server, and others.
 
----
-
-## What Comes Next
-
-The next major step is to move back into end-to-end Python testing with the expanded schema and semantic layer.
-
-Planned next activities:
-
-* run a batch of real NL test prompts
-* observe incorrect object/view selection
-* tune prompt construction and semantic ranking
-* improve schema grounding
-* refine business views where needed
-
-At this stage, the highest-value work is no longer adding raw schema blindly, but testing the AI pipeline against realistic business questions and tightening the system based on evidence.
+**Production-oriented patterns** — explicit status enums, structured result objects, gated pipeline stages, environment-based credential management. This isn't a notebook experiment.
 
 ---
 
-## Project Positioning
+## Certifications
 
-This project is intentionally aimed at the space between:
-
-* traditional database/reporting systems
-* AI-assisted querying
-* safe enterprise data access patterns
-
-The core design principle is:
-
-> Use AI for flexible interpretation, but surround it with deterministic control layers.
+- Oracle Certified PL/SQL Developer – Associate
+- Oracle Certified SQL Expert
+- AWS Certified Solutions Architect – Associate
