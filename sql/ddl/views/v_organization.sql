@@ -6,4 +6,4 @@ CREATE OR REPLACE VIEW v_organization AS
            o.status_code,
            o.primary_address_id,
            o.created_on
-      FROM organization o;
+      FROM t_organization o;

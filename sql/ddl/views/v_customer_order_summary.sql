@@ -14,10 +14,10 @@ CREATE OR REPLACE VIEW v_customer_order_summary AS
            ) AS total_order_amount,
            MIN(oh.order_date) AS first_order_date,
            MAX(oh.order_date) AS most_recent_order_date
-      FROM customer_account ca
-      JOIN organization org
+      FROM t_customer_account ca
+      JOIN t_organization org
     ON org.organization_id = ca.organization_id
-      LEFT JOIN order_header oh
+      LEFT JOIN t_order_header oh
     ON oh.customer_account_id = ca.customer_account_id
      GROUP BY ca.customer_account_id,
               ca.customer_account_number,

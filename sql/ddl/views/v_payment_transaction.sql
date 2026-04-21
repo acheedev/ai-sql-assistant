@@ -7,4 +7,4 @@ CREATE OR REPLACE VIEW v_payment_transaction AS
            pt.status_code,
            pt.payment_amount,
            pt.created_on
-      FROM payment_transaction pt;
+      FROM t_payment_transaction pt;

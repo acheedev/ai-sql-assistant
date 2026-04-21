@@ -6,4 +6,4 @@ CREATE OR REPLACE VIEW v_order_header AS
            oh.status_code,
            oh.order_total_amount,
            oh.created_on
-      FROM order_header oh;
+      FROM t_order_header oh;

@@ -8,4 +8,4 @@ CREATE OR REPLACE VIEW v_order_line_item AS
            oli.line_total,
            oli.status_code,
            oli.created_on
-      FROM order_line_item oli;
+      FROM t_order_line_item oli;

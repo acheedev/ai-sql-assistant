@@ -6,4 +6,4 @@ CREATE OR REPLACE VIEW v_inventory_balance AS
            ib.reorder_threshold,
            ib.status_code,
            ib.created_on
-      FROM inventory_balance ib;
+      FROM t_inventory_balance ib;

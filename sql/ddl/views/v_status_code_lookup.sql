@@ -4,4 +4,4 @@ CREATE OR REPLACE VIEW v_status_code_lookup AS
            scl.status_description,
            scl.is_active,
            scl.created_on
-      FROM status_code_lookup scl;
+      FROM t_status_code_lookup scl;

@@ -8,4 +8,4 @@ CREATE OR REPLACE VIEW v_invoice_header AS
            ih.status_code,
            ih.invoice_total_amount,
            ih.created_on
-      FROM invoice_header ih;
+      FROM t_invoice_header ih;

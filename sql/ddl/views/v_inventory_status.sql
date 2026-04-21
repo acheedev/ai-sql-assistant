@@ -22,8 +22,8 @@ CREATE OR REPLACE VIEW v_inventory_status AS
                ELSE
                    'IN_STOCK'
            END AS inventory_health
-      FROM inventory_balance ib
-      JOIN product_sku ps
+      FROM t_inventory_balance ib
+      JOIN t_product_sku ps
     ON ps.product_sku_id = ib.product_sku_id
-      JOIN product_master pm
+      JOIN t_product_master pm
     ON pm.product_id = ps.product_id;

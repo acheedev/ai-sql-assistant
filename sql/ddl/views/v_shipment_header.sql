@@ -7,4 +7,4 @@ CREATE OR REPLACE VIEW v_shipment_header AS
            sh.ship_to_address_id,
            sh.shipment_total_amount,
            sh.created_on
-      FROM shipment_header sh;
+      FROM t_shipment_header sh;

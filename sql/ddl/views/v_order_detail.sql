@@ -24,14 +24,14 @@ CREATE OR REPLACE VIEW v_order_detail AS
            pm.product_code,
            pm.product_name,
            pm.product_category
-      FROM order_header oh
-      JOIN customer_account ca
+      FROM t_order_header oh
+      JOIN t_customer_account ca
     ON ca.customer_account_id = oh.customer_account_id
-      JOIN organization org
+      JOIN t_organization org
     ON org.organization_id = ca.organization_id
-      JOIN order_line_item oli
+      JOIN t_order_line_item oli
     ON oli.order_id = oh.order_id
-      JOIN product_sku ps
+      JOIN t_product_sku ps
     ON ps.product_sku_id = oli.product_sku_id
-      JOIN product_master pm
+      JOIN t_product_master pm
     ON pm.product_id = ps.product_id;

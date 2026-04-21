@@ -8,4 +8,4 @@ CREATE OR REPLACE VIEW v_customer_account AS
            ca.billing_address_id,
            ca.shipping_address_id,
            ca.created_on
-      FROM customer_account ca;
+      FROM t_customer_account ca;

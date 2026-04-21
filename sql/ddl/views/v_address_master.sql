@@ -7,4 +7,4 @@ CREATE OR REPLACE VIEW v_address_master AS
            am.postal_code,
            am.country_code,
            am.created_on
-      FROM address_master am;
+      FROM t_address_master am;

@@ -6,4 +6,4 @@ CREATE OR REPLACE VIEW v_product_master AS
            pm.product_category,
            pm.status_code,
            pm.created_on
-      FROM product_master pm;
+      FROM t_product_master pm;

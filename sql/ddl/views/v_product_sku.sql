@@ -7,4 +7,4 @@ CREATE OR REPLACE VIEW v_product_sku AS
            ps.unit_price,
            ps.status_code,
            ps.created_on
-      FROM product_sku ps;
+      FROM t_product_sku ps;
