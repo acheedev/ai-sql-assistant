@@ -35,13 +35,13 @@ class PipelineResult:
 
     def print_pipeline_result(self) -> None:
         print(
-            f"question: {self.question}\n"
-            f"sql: {self.sql}\n"
-            f"is_safe: {self.is_safe}\n"
-            f"message: {self.message}\n"
-            f"results: {self.results}\n"
-            f"explanation: {self.explanation}\n"
-            f"status: {self.status.value}\n"
+            f"question: {self.question}\n\n"
+            f"sql: {self.sql}\n\n"
+            f"is_safe: {self.is_safe}\n\n"
+            f"message: {self.message}\n\n"
+            f"results: {self.results}\n\n"
+            f"explanation: \n{self.explanation}\n\n"
+            f"status: {self.status.value}\n\n"
         )
 
 

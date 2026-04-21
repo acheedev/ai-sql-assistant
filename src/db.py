@@ -57,8 +57,8 @@ def get_semantic_schema() -> dict:
                 sc.is_default_select,
                 sc.is_filterable,
                 sc.display_rank
-            FROM semantic_object so
-            JOIN semantic_column sc ON sc.object_name = so.object_name
+            FROM t_semantic_object so
+            JOIN t_semantic_column sc ON sc.object_name = so.object_name
             WHERE so.include_in_ai = 'Y'
             AND   so.status = 'ACTIVE'
             ORDER BY so.default_rank, so.object_name,
@@ -97,7 +97,7 @@ def get_semantic_schema() -> dict:
         # --- Aliases ---
         cursor.execute("""
             SELECT object_name, alias_term, alias_weight
-            FROM semantic_object_alias
+            FROM t_semantic_object_alias
             ORDER BY object_name, alias_weight DESC
         """)
 
@@ -108,7 +108,7 @@ def get_semantic_schema() -> dict:
         # --- Example questions ---
         cursor.execute("""
             SELECT question_text, preferred_object_name, exemplar_sql
-            FROM semantic_example_question
+            FROM t_semantic_example_question
             WHERE is_enabled = 'Y'
             ORDER BY preferred_object_name
         """)
