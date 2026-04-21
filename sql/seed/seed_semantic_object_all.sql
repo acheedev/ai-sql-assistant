@@ -123,7 +123,8 @@ INSERT INTO t_semantic_object (
 ) VALUES ( 'V_ORDER_DETAIL',
            'VIEW',
            'Order Detail',
-           'Line-item level view. One row per order line. Use when SKU, product, quantity, or pricing detail is needed. For order-level queries without line detail, prefer V_ORDER_HEADER or V_CUSTOMER_ORDER_SUMMARY.',
+           'Line-item level view. One row per order line. Use when SKU, product, quantity, or pricing detail is needed. For order-level queries without line detail, prefer V_ORDER_HEADER or V_CUSTOMER_ORDER_SUMMARY.'
+           ,
            'Y',
            'Y',
            12,
@@ -274,5 +275,27 @@ INSERT INTO t_semantic_object (
            'N',
            50,
            'ACTIVE' );
+
+COMMIT;
+
+UPDATE t_semantic_object
+   SET
+    short_description = 'Shipment records tied to orders. Status values: PENDING, IN_TRANSIT, DELIVERED, RETURNED, CANCELLED.'
+ WHERE object_name = 'V_SHIPMENT_HEADER';
+
+UPDATE t_semantic_object
+   SET
+    short_description = 'Payment records tied to invoices. Status values: PENDING, COMPLETED, FAILED, REFUNDED.'
+ WHERE object_name = 'V_PAYMENT_TRANSACTION';
+
+UPDATE t_semantic_object
+   SET
+    short_description = 'Invoice records tied to orders. Status values: ISSUED, PAID, OVERDUE, CANCELLED, VOID.'
+ WHERE object_name = 'V_INVOICE_HEADER';
+
+UPDATE t_semantic_object
+   SET
+    short_description = 'Order header records including customer, order date, status, and total amount. Status values: DRAFT, CONFIRMED, FULFILLED, CANCELLED, CLOSED.'
+ WHERE object_name = 'V_ORDER_HEADER';
 
 COMMIT;

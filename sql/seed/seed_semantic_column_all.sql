@@ -1967,3 +1967,30 @@ INSERT INTO t_semantic_column (
            'Y',
            40 );
 COMMIT;
+
+INSERT INTO t_semantic_column (
+    object_name,
+    column_name,
+    business_name,
+    is_human_readable,
+    is_identifier,
+    is_default_select,
+    is_filterable,
+    display_rank
+) VALUES ( 'V_INVOICE_HEADER',
+           'INVOICE_ID',
+           'Invoice ID',
+           'N',
+           'Y',
+           'N',
+           'Y',
+           5 );
+
+
+UPDATE t_semantic_column
+   SET
+    is_identifier = 'N'
+ WHERE object_name = 'V_INVOICE_HEADER'
+   AND column_name = 'INVOICE_NUMBER';
+
+COMMIT;

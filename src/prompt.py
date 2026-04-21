@@ -94,6 +94,8 @@ Rules:
 - Use Oracle-compatible SQL syntax (e.g., FETCH FIRST N ROWS ONLY instead of LIMIT)
 - Do not add a semicolon to the end of the SQL statement
 - If a user term matches an alias listed under "Also known as", resolve it to that object
+- Never invent or assume status code values in WHERE clauses. Only filter on status codes explicitly provided by the user in their question.
+- When checking for missing related records, use LEFT JOIN without status filters on the join condition. Apply status filters in the WHERE clause only.
 
 Output requirements:
 - Always include human-readable fields when available, not just IDs

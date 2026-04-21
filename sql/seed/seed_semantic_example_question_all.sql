@@ -571,3 +571,36 @@ order by address_line1
            'Y' );
 
 COMMIT;
+
+INSERT INTO t_semantic_example_question (
+    question_text,
+    preferred_object_name,
+    exemplar_sql,
+    is_enabled
+) VALUES ( 'Show shipments in transit with unpaid invoices',
+           'V_SHIPMENT_HEADER',
+           'select sh.shipment_number, sh.order_id, sh.shipment_date,
+    sh.status_code as shipment_status, inv.invoice_number,
+    inv.status_code as invoice_status
+from v_shipment_header sh
+join v_invoice_header inv on sh.order_id = inv.order_id
+where sh.status_code = ''IN_TRANSIT''
+and inv.status_code not in (''PAID'', ''CANCELLED'', ''VOID'')
+order by sh.shipment_date desc',
+           'Y' );
+COMMIT;
+
+UPDATE t_semantic_example_question
+   SET
+    exemplar_sql = 'select sh.shipment_number, sh.order_id, sh.shipment_date,
+    sh.status_code as shipment_status, inv.invoice_number,
+    inv.status_code as invoice_status, inv.invoice_total_amount,
+    pay.payment_reference, pay.status_code as payment_status
+from v_shipment_header sh
+join v_invoice_header inv on sh.order_id = inv.order_id
+left join v_payment_transaction pay on inv.invoice_id = pay.invoice_id
+where sh.status_code in (''IN_TRANSIT'', ''DELIVERED'')
+and (pay.invoice_id is null or pay.status_code != ''COMPLETED'')
+order by sh.shipment_date desc, sh.shipment_number'
+ WHERE question_text = 'Show shipments in transit with unpaid invoices';
+COMMIT;
