@@ -123,7 +123,7 @@ INSERT INTO t_semantic_object (
 ) VALUES ( 'V_ORDER_DETAIL',
            'VIEW',
            'Order Detail',
-           'Denormalized order detail view joining order, customer, organization, line item, SKU, and product.',
+           'Line-item level view. One row per order line. Use when SKU, product, quantity, or pricing detail is needed. For order-level queries without line detail, prefer V_ORDER_HEADER or V_CUSTOMER_ORDER_SUMMARY.',
            'Y',
            'Y',
            12,

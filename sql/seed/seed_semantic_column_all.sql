@@ -50,7 +50,7 @@ INSERT INTO t_semantic_column (
            'ORDER_ID',
            'Order ID',
            'N',
-           'N',
+           'Y',
            'N',
            'Y',
            20 );
@@ -104,7 +104,7 @@ INSERT INTO t_semantic_column (
            'SHIP_TO_ADDRESS_ID',
            'Ship To Address ID',
            'N',
-           'N',
+           'Y',
            'N',
            'Y',
            50 );
@@ -161,7 +161,7 @@ INSERT INTO t_semantic_column (
            'PRODUCT_SKU_ID',
            'Product SKU ID',
            'N',
-           'N',
+           'Y',
            'N',
            'Y',
            20 );
@@ -318,7 +318,7 @@ INSERT INTO t_semantic_column (
            'CUSTOMER_ACCOUNT_ID',
            'Customer Account ID',
            'N',
-           'N',
+           'Y',
            'N',
            'Y',
            20 );
@@ -411,7 +411,7 @@ INSERT INTO t_semantic_column (
            'ORDER_ID',
            'Order ID',
            'N',
-           'N',
+           'Y',
            'N',
            'Y',
            80 );
@@ -447,7 +447,7 @@ INSERT INTO t_semantic_column (
            'PRODUCT_SKU_ID',
            'Product SKU ID',
            'N',
-           'N',
+           'Y',
            'N',
            'Y',
            20 );
@@ -1383,7 +1383,7 @@ INSERT INTO t_semantic_column (
            'CUSTOMER_ACCOUNT_ID',
            'Customer Account ID',
            'N',
-           'N',
+           'Y',
            'N',
            'Y',
            20 );
@@ -1401,7 +1401,7 @@ INSERT INTO t_semantic_column (
            'ORDER_ID',
            'Order ID',
            'N',
-           'N',
+           'Y',
            'N',
            'Y',
            30 );
@@ -1512,7 +1512,7 @@ INSERT INTO t_semantic_column (
            'INVOICE_ID',
            'Invoice ID',
            'N',
-           'N',
+           'Y',
            'N',
            'Y',
            20 );
@@ -1692,7 +1692,7 @@ INSERT INTO t_semantic_column (
            'ORGANIZATION_ID',
            'Organization ID',
            'N',
-           'N',
+           'Y',
            'N',
            'Y',
            50 );
