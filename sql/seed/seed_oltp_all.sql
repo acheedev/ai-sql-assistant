@@ -8,7 +8,7 @@ pro    =========================================================
 -- -------------------------------------------------------------
 -- organization
 -- -------------------------------------------------------------
-INSERT INTO organization (
+INSERT INTO t_organization (
     organization_code,
     organization_name,
     organization_type,
@@ -20,12 +20,12 @@ INSERT INTO organization (
            'ACTIVE',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '100 Market Street'
                   AND city = 'Charlotte'
            ) );
 
-INSERT INTO organization (
+INSERT INTO t_organization (
     organization_code,
     organization_name,
     organization_type,
@@ -37,12 +37,12 @@ INSERT INTO organization (
            'ACTIVE',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '500 Lake Drive'
                   AND city = 'Cornelius'
            ) );
 
-INSERT INTO organization (
+INSERT INTO t_organization (
     organization_code,
     organization_name,
     organization_type,
@@ -54,12 +54,12 @@ INSERT INTO organization (
            'PENDING',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '12 Industrial Park Road'
                   AND city = 'Raleigh'
            ) );
 
-INSERT INTO organization (
+INSERT INTO t_organization (
     organization_code,
     organization_name,
     organization_type,
@@ -71,12 +71,12 @@ INSERT INTO organization (
            'ACTIVE',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '88 Innovation Way'
                   AND city = 'Austin'
            ) );
 
-INSERT INTO organization (
+INSERT INTO t_organization (
     organization_code,
     organization_name,
     organization_type,
@@ -88,7 +88,7 @@ INSERT INTO organization (
            'INACTIVE',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '200 King Street West'
                   AND city = 'Toronto'
            ) );
@@ -96,7 +96,7 @@ INSERT INTO organization (
 -- -------------------------------------------------------------
 -- customer_account
 -- -------------------------------------------------------------
-INSERT INTO customer_account (
+INSERT INTO t_customer_account (
     customer_account_number,
     organization_id,
     customer_name,
@@ -107,7 +107,7 @@ INSERT INTO customer_account (
 ) VALUES ( 'CUST1001',
            (
                SELECT organization_id
-                 FROM organization
+                 FROM t_organization
                 WHERE organization_code = 'ORG100'
            ),
            'Acme East Division',
@@ -115,18 +115,18 @@ INSERT INTO customer_account (
            'ACTIVE',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '100 Market Street'
                   AND city = 'Charlotte'
            ),
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '250 Trade Avenue'
                   AND city = 'Charlotte'
            ) );
 
-INSERT INTO customer_account (
+INSERT INTO t_customer_account (
     customer_account_number,
     organization_id,
     customer_name,
@@ -137,7 +137,7 @@ INSERT INTO customer_account (
 ) VALUES ( 'CUST1002',
            (
                SELECT organization_id
-                 FROM organization
+                 FROM t_organization
                 WHERE organization_code = 'ORG100'
            ),
            'Acme West Division',
@@ -145,18 +145,18 @@ INSERT INTO customer_account (
            'ACTIVE',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '100 Market Street'
                   AND city = 'Charlotte'
            ),
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '15 Harbor Boulevard'
                   AND city = 'San Diego'
            ) );
 
-INSERT INTO customer_account (
+INSERT INTO t_customer_account (
     customer_account_number,
     organization_id,
     customer_name,
@@ -167,7 +167,7 @@ INSERT INTO customer_account (
 ) VALUES ( 'CUST2001',
            (
                SELECT organization_id
-                 FROM organization
+                 FROM t_organization
                 WHERE organization_code = 'ORG200'
            ),
            'Blue Horizon Stores',
@@ -175,18 +175,18 @@ INSERT INTO customer_account (
            'ACTIVE',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '500 Lake Drive'
                   AND city = 'Cornelius'
            ),
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '742 Evergreen Terrace'
                   AND city = 'Denver'
            ) );
 
-INSERT INTO customer_account (
+INSERT INTO t_customer_account (
     customer_account_number,
     organization_id,
     customer_name,
@@ -197,7 +197,7 @@ INSERT INTO customer_account (
 ) VALUES ( 'CUST2002',
            (
                SELECT organization_id
-                 FROM organization
+                 FROM t_organization
                 WHERE organization_code = 'ORG200'
            ),
            'Blue Horizon Online',
@@ -205,18 +205,18 @@ INSERT INTO customer_account (
            'PENDING',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '500 Lake Drive'
                   AND city = 'Cornelius'
            ),
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '500 Lake Drive'
                   AND city = 'Cornelius'
            ) );
 
-INSERT INTO customer_account (
+INSERT INTO t_customer_account (
     customer_account_number,
     organization_id,
     customer_name,
@@ -227,7 +227,7 @@ INSERT INTO customer_account (
 ) VALUES ( 'CUST3001',
            (
                SELECT organization_id
-                 FROM organization
+                 FROM t_organization
                 WHERE organization_code = 'ORG300'
            ),
            'Northwind Freight',
@@ -235,18 +235,18 @@ INSERT INTO customer_account (
            'PENDING',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '12 Industrial Park Road'
                   AND city = 'Raleigh'
            ),
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '12 Industrial Park Road'
                   AND city = 'Raleigh'
            ) );
 
-INSERT INTO customer_account (
+INSERT INTO t_customer_account (
     customer_account_number,
     organization_id,
     customer_name,
@@ -257,7 +257,7 @@ INSERT INTO customer_account (
 ) VALUES ( 'CUST4001',
            (
                SELECT organization_id
-                 FROM organization
+                 FROM t_organization
                 WHERE organization_code = 'ORG400'
            ),
            'Summit Primary Care',
@@ -265,18 +265,18 @@ INSERT INTO customer_account (
            'ACTIVE',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '88 Innovation Way'
                   AND city = 'Austin'
            ),
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '88 Innovation Way'
                   AND city = 'Austin'
            ) );
 
-INSERT INTO customer_account (
+INSERT INTO t_customer_account (
     customer_account_number,
     organization_id,
     customer_name,
@@ -287,7 +287,7 @@ INSERT INTO customer_account (
 ) VALUES ( 'CUST4002',
            (
                SELECT organization_id
-                 FROM organization
+                 FROM t_organization
                 WHERE organization_code = 'ORG400'
            ),
            'Summit Specialty Clinic',
@@ -295,18 +295,18 @@ INSERT INTO customer_account (
            'SUSPENDED',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '88 Innovation Way'
                   AND city = 'Austin'
            ),
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '15 Harbor Boulevard'
                   AND city = 'San Diego'
            ) );
 
-INSERT INTO customer_account (
+INSERT INTO t_customer_account (
     customer_account_number,
     organization_id,
     customer_name,
@@ -317,7 +317,7 @@ INSERT INTO customer_account (
 ) VALUES ( 'CUST5001',
            (
                SELECT organization_id
-                 FROM organization
+                 FROM t_organization
                 WHERE organization_code = 'ORG500'
            ),
            'Legacy Public Sector',
@@ -325,18 +325,18 @@ INSERT INTO customer_account (
            'INACTIVE',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '200 King Street West'
                   AND city = 'Toronto'
            ),
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '200 King Street West'
                   AND city = 'Toronto'
            ) );
 
-INSERT INTO customer_account (
+INSERT INTO t_customer_account (
     customer_account_number,
     organization_id,
     customer_name,
@@ -347,7 +347,7 @@ INSERT INTO customer_account (
 ) VALUES ( 'CUST5002',
            (
                SELECT organization_id
-                 FROM organization
+                 FROM t_organization
                 WHERE organization_code = 'ORG500'
            ),
            'Legacy Enterprise',
@@ -355,13 +355,13 @@ INSERT INTO customer_account (
            'CLOSED',
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '200 King Street West'
                   AND city = 'Toronto'
            ),
            (
                SELECT address_id
-                 FROM address_master
+                 FROM t_address_master
                 WHERE address_line1 = '100 Market Street'
                   AND city = 'Charlotte'
            ) );
@@ -376,7 +376,7 @@ pro    =========================================================
 -- -------------------------------------------------------------
 -- product_master
 -- -------------------------------------------------------------
-INSERT INTO product_master (
+INSERT INTO t_product_master (
     product_code,
     product_name,
     product_description,
@@ -388,7 +388,7 @@ INSERT INTO product_master (
            'HARDWARE',
            'ACTIVE' );
 
-INSERT INTO product_master (
+INSERT INTO t_product_master (
     product_code,
     product_name,
     product_description,
@@ -400,7 +400,7 @@ INSERT INTO product_master (
            'HARDWARE',
            'ACTIVE' );
 
-INSERT INTO product_master (
+INSERT INTO t_product_master (
     product_code,
     product_name,
     product_description,
@@ -412,7 +412,7 @@ INSERT INTO product_master (
            'ACCESSORY',
            'ACTIVE' );
 
-INSERT INTO product_master (
+INSERT INTO t_product_master (
     product_code,
     product_name,
     product_description,
@@ -424,7 +424,7 @@ INSERT INTO product_master (
            'ACCESSORY',
            'ACTIVE' );
 
-INSERT INTO product_master (
+INSERT INTO t_product_master (
     product_code,
     product_name,
     product_description,
@@ -439,7 +439,7 @@ INSERT INTO product_master (
 -- -------------------------------------------------------------
 -- product_sku
 -- -------------------------------------------------------------
-INSERT INTO product_sku (
+INSERT INTO t_product_sku (
     product_id,
     sku_code,
     sku_name,
@@ -448,7 +448,7 @@ INSERT INTO product_sku (
     status_code
 ) VALUES ( (
     SELECT product_id
-      FROM product_master
+      FROM t_product_master
      WHERE product_code = 'LAPTOP'
 ),
            'LAPTOP-13-256',
@@ -457,7 +457,7 @@ INSERT INTO product_sku (
            1199.00,
            'ACTIVE' );
 
-INSERT INTO product_sku (
+INSERT INTO t_product_sku (
     product_id,
     sku_code,
     sku_name,
@@ -466,7 +466,7 @@ INSERT INTO product_sku (
     status_code
 ) VALUES ( (
     SELECT product_id
-      FROM product_master
+      FROM t_product_master
      WHERE product_code = 'LAPTOP'
 ),
            'LAPTOP-15-512',
@@ -475,7 +475,7 @@ INSERT INTO product_sku (
            1499.00,
            'ACTIVE' );
 
-INSERT INTO product_sku (
+INSERT INTO t_product_sku (
     product_id,
     sku_code,
     sku_name,
@@ -484,7 +484,7 @@ INSERT INTO product_sku (
     status_code
 ) VALUES ( (
     SELECT product_id
-      FROM product_master
+      FROM t_product_master
      WHERE product_code = 'MONITOR'
 ),
            'MONITOR-24-FHD',
@@ -493,7 +493,7 @@ INSERT INTO product_sku (
            249.00,
            'ACTIVE' );
 
-INSERT INTO product_sku (
+INSERT INTO t_product_sku (
     product_id,
     sku_code,
     sku_name,
@@ -502,7 +502,7 @@ INSERT INTO product_sku (
     status_code
 ) VALUES ( (
     SELECT product_id
-      FROM product_master
+      FROM t_product_master
      WHERE product_code = 'MONITOR'
 ),
            'MONITOR-27-QHD',
@@ -511,7 +511,7 @@ INSERT INTO product_sku (
            399.00,
            'ACTIVE' );
 
-INSERT INTO product_sku (
+INSERT INTO t_product_sku (
     product_id,
     sku_code,
     sku_name,
@@ -520,7 +520,7 @@ INSERT INTO product_sku (
     status_code
 ) VALUES ( (
     SELECT product_id
-      FROM product_master
+      FROM t_product_master
      WHERE product_code = 'DOCK'
 ),
            'DOCK-USB-C-90W',
@@ -529,7 +529,7 @@ INSERT INTO product_sku (
            219.00,
            'ACTIVE' );
 
-INSERT INTO product_sku (
+INSERT INTO t_product_sku (
     product_id,
     sku_code,
     sku_name,
@@ -538,7 +538,7 @@ INSERT INTO product_sku (
     status_code
 ) VALUES ( (
     SELECT product_id
-      FROM product_master
+      FROM t_product_master
      WHERE product_code = 'KEYBOARD'
 ),
            'KEYBOARD-WL-BLK',
@@ -547,7 +547,7 @@ INSERT INTO product_sku (
            79.00,
            'ACTIVE' );
 
-INSERT INTO product_sku (
+INSERT INTO t_product_sku (
     product_id,
     sku_code,
     sku_name,
@@ -556,7 +556,7 @@ INSERT INTO product_sku (
     status_code
 ) VALUES ( (
     SELECT product_id
-      FROM product_master
+      FROM t_product_master
      WHERE product_code = 'KEYBOARD'
 ),
            'KEYBOARD-WL-WHT',
@@ -565,7 +565,7 @@ INSERT INTO product_sku (
            79.00,
            'ACTIVE' );
 
-INSERT INTO product_sku (
+INSERT INTO t_product_sku (
     product_id,
     sku_code,
     sku_name,
@@ -574,7 +574,7 @@ INSERT INTO product_sku (
     status_code
 ) VALUES ( (
     SELECT product_id
-      FROM product_master
+      FROM t_product_master
      WHERE product_code = 'DESKTOP'
 ),
            'DESKTOP-I7-32GB',
@@ -593,7 +593,7 @@ pro    =========================================================
 -- -------------------------------------------------------------
 -- status_code_lookup
 -- -------------------------------------------------------------
-INSERT INTO status_code_lookup (
+INSERT INTO t_status_code_lookup (
     status_code,
     status_type,
     status_description,
@@ -603,7 +603,7 @@ INSERT INTO status_code_lookup (
            'Active / currently in use',
            'Y' );
 
-INSERT INTO status_code_lookup (
+INSERT INTO t_status_code_lookup (
     status_code,
     status_type,
     status_description,
@@ -613,7 +613,7 @@ INSERT INTO status_code_lookup (
            'Inactive / no longer in use',
            'Y' );
 
-INSERT INTO status_code_lookup (
+INSERT INTO t_status_code_lookup (
     status_code,
     status_type,
     status_description,
@@ -623,7 +623,7 @@ INSERT INTO status_code_lookup (
            'Pending review or activation',
            'Y' );
 
-INSERT INTO status_code_lookup (
+INSERT INTO t_status_code_lookup (
     status_code,
     status_type,
     status_description,
@@ -633,7 +633,7 @@ INSERT INTO status_code_lookup (
            'Temporarily suspended',
            'Y' );
 
-INSERT INTO status_code_lookup (
+INSERT INTO t_status_code_lookup (
     status_code,
     status_type,
     status_description,
@@ -643,7 +643,7 @@ INSERT INTO status_code_lookup (
            'Closed / terminated',
            'Y' );
 
-INSERT INTO status_code_lookup (
+INSERT INTO t_status_code_lookup (
     status_code,
     status_type,
     status_description,
@@ -656,7 +656,7 @@ INSERT INTO status_code_lookup (
 -- -------------------------------------------------------------
 -- address_master
 -- -------------------------------------------------------------
-INSERT INTO address_master (
+INSERT INTO t_address_master (
     address_line1,
     address_line2,
     city,
@@ -670,7 +670,7 @@ INSERT INTO address_master (
            '28202',
            'US' );
 
-INSERT INTO address_master (
+INSERT INTO t_address_master (
     address_line1,
     address_line2,
     city,
@@ -684,7 +684,7 @@ INSERT INTO address_master (
            '28203',
            'US' );
 
-INSERT INTO address_master (
+INSERT INTO t_address_master (
     address_line1,
     address_line2,
     city,
@@ -698,7 +698,7 @@ INSERT INTO address_master (
            '28031',
            'US' );
 
-INSERT INTO address_master (
+INSERT INTO t_address_master (
     address_line1,
     address_line2,
     city,
@@ -712,7 +712,7 @@ INSERT INTO address_master (
            '28037',
            'US' );
 
-INSERT INTO address_master (
+INSERT INTO t_address_master (
     address_line1,
     address_line2,
     city,
@@ -726,7 +726,7 @@ INSERT INTO address_master (
            '27601',
            'US' );
 
-INSERT INTO address_master (
+INSERT INTO t_address_master (
     address_line1,
     address_line2,
     city,
@@ -740,7 +740,7 @@ INSERT INTO address_master (
            '73301',
            'US' );
 
-INSERT INTO address_master (
+INSERT INTO t_address_master (
     address_line1,
     address_line2,
     city,
@@ -754,7 +754,7 @@ INSERT INTO address_master (
            '92101',
            'US' );
 
-INSERT INTO address_master (
+INSERT INTO t_address_master (
     address_line1,
     address_line2,
     city,
@@ -777,7 +777,7 @@ pro    =========================================================
 -- -------------------------------------------------------------
 -- order_header
 -- -------------------------------------------------------------
-INSERT INTO order_header (
+INSERT INTO t_order_header (
     order_number,
     customer_account_id,
     order_date,
@@ -786,14 +786,14 @@ INSERT INTO order_header (
 ) VALUES ( 'ORD-1001',
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST1001'
            ),
            DATE '2026-01-10',
            'ACTIVE',
            1648.00 );
 
-INSERT INTO order_header (
+INSERT INTO t_order_header (
     order_number,
     customer_account_id,
     order_date,
@@ -802,14 +802,14 @@ INSERT INTO order_header (
 ) VALUES ( 'ORD-1002',
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST1002'
            ),
            DATE '2026-01-15',
            'ACTIVE',
            1718.00 );
 
-INSERT INTO order_header (
+INSERT INTO t_order_header (
     order_number,
     customer_account_id,
     order_date,
@@ -818,14 +818,14 @@ INSERT INTO order_header (
 ) VALUES ( 'ORD-1003',
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST2001'
            ),
            DATE '2026-01-22',
            'ACTIVE',
            648.00 );
 
-INSERT INTO order_header (
+INSERT INTO t_order_header (
     order_number,
     customer_account_id,
     order_date,
@@ -834,14 +834,14 @@ INSERT INTO order_header (
 ) VALUES ( 'ORD-1004',
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST2002'
            ),
            DATE '2026-02-03',
            'PENDING',
            219.00 );
 
-INSERT INTO order_header (
+INSERT INTO t_order_header (
     order_number,
     customer_account_id,
     order_date,
@@ -850,14 +850,14 @@ INSERT INTO order_header (
 ) VALUES ( 'ORD-1005',
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST3001'
            ),
            DATE '2026-02-11',
            'ACTIVE',
            399.00 );
 
-INSERT INTO order_header (
+INSERT INTO t_order_header (
     order_number,
     customer_account_id,
     order_date,
@@ -866,14 +866,14 @@ INSERT INTO order_header (
 ) VALUES ( 'ORD-1006',
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST4001'
            ),
            DATE '2026-02-20',
            'ACTIVE',
            1578.00 );
 
-INSERT INTO order_header (
+INSERT INTO t_order_header (
     order_number,
     customer_account_id,
     order_date,
@@ -882,14 +882,14 @@ INSERT INTO order_header (
 ) VALUES ( 'ORD-1007',
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST4002'
            ),
            DATE '2026-03-01',
            'SUSPENDED',
            79.00 );
 
-INSERT INTO order_header (
+INSERT INTO t_order_header (
     order_number,
     customer_account_id,
     order_date,
@@ -898,7 +898,7 @@ INSERT INTO order_header (
 ) VALUES ( 'ORD-1008',
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST5001'
            ),
            DATE '2026-03-10',
@@ -908,7 +908,7 @@ INSERT INTO order_header (
 -- -------------------------------------------------------------
 -- order_line_item
 -- -------------------------------------------------------------
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -918,13 +918,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1001'
 ),
            1,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'LAPTOP-13-256'
            ),
            1,
@@ -932,7 +932,7 @@ INSERT INTO order_line_item (
            1199.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -942,13 +942,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1001'
 ),
            2,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'MONITOR-24-FHD'
            ),
            1,
@@ -956,7 +956,7 @@ INSERT INTO order_line_item (
            249.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -966,13 +966,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1001'
 ),
            3,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'DOCK-USB-C-90W'
            ),
            1,
@@ -980,7 +980,7 @@ INSERT INTO order_line_item (
            200.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -990,13 +990,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1002'
 ),
            1,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'LAPTOP-15-512'
            ),
            1,
@@ -1004,7 +1004,7 @@ INSERT INTO order_line_item (
            1499.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1014,13 +1014,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1002'
 ),
            2,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'KEYBOARD-WL-BLK'
            ),
            1,
@@ -1028,7 +1028,7 @@ INSERT INTO order_line_item (
            79.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1038,13 +1038,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1002'
 ),
            3,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'DOCK-USB-C-90W'
            ),
            1,
@@ -1052,7 +1052,7 @@ INSERT INTO order_line_item (
            140.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1062,13 +1062,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1003'
 ),
            1,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'MONITOR-27-QHD'
            ),
            1,
@@ -1076,7 +1076,7 @@ INSERT INTO order_line_item (
            399.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1086,13 +1086,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1003'
 ),
            2,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'KEYBOARD-WL-WHT'
            ),
            1,
@@ -1100,7 +1100,7 @@ INSERT INTO order_line_item (
            79.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1110,13 +1110,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1003'
 ),
            3,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'MONITOR-24-FHD'
            ),
            1,
@@ -1124,7 +1124,7 @@ INSERT INTO order_line_item (
            170.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1134,13 +1134,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1004'
 ),
            1,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'DOCK-USB-C-90W'
            ),
            1,
@@ -1148,7 +1148,7 @@ INSERT INTO order_line_item (
            219.00,
            'PENDING' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1158,13 +1158,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1005'
 ),
            1,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'MONITOR-27-QHD'
            ),
            1,
@@ -1172,7 +1172,7 @@ INSERT INTO order_line_item (
            399.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1182,13 +1182,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1006'
 ),
            1,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'LAPTOP-13-256'
            ),
            1,
@@ -1196,7 +1196,7 @@ INSERT INTO order_line_item (
            1199.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1206,13 +1206,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1006'
 ),
            2,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'KEYBOARD-WL-BLK'
            ),
            1,
@@ -1220,7 +1220,7 @@ INSERT INTO order_line_item (
            79.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1230,13 +1230,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1006'
 ),
            3,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'MONITOR-24-FHD'
            ),
            1,
@@ -1244,7 +1244,7 @@ INSERT INTO order_line_item (
            300.00,
            'ACTIVE' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1254,13 +1254,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1007'
 ),
            1,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'KEYBOARD-WL-WHT'
            ),
            1,
@@ -1268,7 +1268,7 @@ INSERT INTO order_line_item (
            79.00,
            'SUSPENDED' );
 
-INSERT INTO order_line_item (
+INSERT INTO t_order_line_item (
     order_id,
     line_number,
     product_sku_id,
@@ -1278,13 +1278,13 @@ INSERT INTO order_line_item (
     status_code
 ) VALUES ( (
     SELECT order_id
-      FROM order_header
+      FROM t_order_header
      WHERE order_number = 'ORD-1008'
 ),
            1,
            (
                SELECT product_sku_id
-                 FROM product_sku
+                 FROM t_product_sku
                 WHERE sku_code = 'DESKTOP-I7-32GB'
            ),
            1,
@@ -1302,7 +1302,7 @@ pro    =========================================================
 -- -------------------------------------------------------------
 -- invoice_header
 -- -------------------------------------------------------------
-INSERT INTO invoice_header (
+INSERT INTO t_invoice_header (
     invoice_number,
     order_id,
     customer_account_id,
@@ -1313,12 +1313,12 @@ INSERT INTO invoice_header (
 ) VALUES ( 'INV-1001',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1001'
            ),
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST1001'
            ),
            DATE '2026-01-13',
@@ -1326,7 +1326,7 @@ INSERT INTO invoice_header (
            'ACTIVE',
            1648.00 );
 
-INSERT INTO invoice_header (
+INSERT INTO t_invoice_header (
     invoice_number,
     order_id,
     customer_account_id,
@@ -1337,12 +1337,12 @@ INSERT INTO invoice_header (
 ) VALUES ( 'INV-1002',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1002'
            ),
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST1002'
            ),
            DATE '2026-01-19',
@@ -1350,7 +1350,7 @@ INSERT INTO invoice_header (
            'ACTIVE',
            1718.00 );
 
-INSERT INTO invoice_header (
+INSERT INTO t_invoice_header (
     invoice_number,
     order_id,
     customer_account_id,
@@ -1361,12 +1361,12 @@ INSERT INTO invoice_header (
 ) VALUES ( 'INV-1003',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1003'
            ),
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST2001'
            ),
            DATE '2026-01-26',
@@ -1374,7 +1374,7 @@ INSERT INTO invoice_header (
            'ACTIVE',
            648.00 );
 
-INSERT INTO invoice_header (
+INSERT INTO t_invoice_header (
     invoice_number,
     order_id,
     customer_account_id,
@@ -1385,12 +1385,12 @@ INSERT INTO invoice_header (
 ) VALUES ( 'INV-1004',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1004'
            ),
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST2002'
            ),
            DATE '2026-02-06',
@@ -1398,7 +1398,7 @@ INSERT INTO invoice_header (
            'PENDING',
            219.00 );
 
-INSERT INTO invoice_header (
+INSERT INTO t_invoice_header (
     invoice_number,
     order_id,
     customer_account_id,
@@ -1409,12 +1409,12 @@ INSERT INTO invoice_header (
 ) VALUES ( 'INV-1005',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1005'
            ),
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST3001'
            ),
            DATE '2026-02-14',
@@ -1422,7 +1422,7 @@ INSERT INTO invoice_header (
            'ACTIVE',
            399.00 );
 
-INSERT INTO invoice_header (
+INSERT INTO t_invoice_header (
     invoice_number,
     order_id,
     customer_account_id,
@@ -1433,12 +1433,12 @@ INSERT INTO invoice_header (
 ) VALUES ( 'INV-1006',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1006'
            ),
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST4001'
            ),
            DATE '2026-02-24',
@@ -1446,7 +1446,7 @@ INSERT INTO invoice_header (
            'ACTIVE',
            1578.00 );
 
-INSERT INTO invoice_header (
+INSERT INTO t_invoice_header (
     invoice_number,
     order_id,
     customer_account_id,
@@ -1457,12 +1457,12 @@ INSERT INTO invoice_header (
 ) VALUES ( 'INV-1007',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1007'
            ),
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST4002'
            ),
            DATE '2026-03-04',
@@ -1470,7 +1470,7 @@ INSERT INTO invoice_header (
            'SUSPENDED',
            79.00 );
 
-INSERT INTO invoice_header (
+INSERT INTO t_invoice_header (
     invoice_number,
     order_id,
     customer_account_id,
@@ -1481,12 +1481,12 @@ INSERT INTO invoice_header (
 ) VALUES ( 'INV-1008',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1008'
            ),
            (
                SELECT customer_account_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST5001'
            ),
            DATE '2026-03-13',
@@ -1497,7 +1497,7 @@ INSERT INTO invoice_header (
 -- -------------------------------------------------------------
 -- payment_transaction
 -- -------------------------------------------------------------
-INSERT INTO payment_transaction (
+INSERT INTO t_payment_transaction (
     payment_reference,
     invoice_id,
     payment_date,
@@ -1507,7 +1507,7 @@ INSERT INTO payment_transaction (
 ) VALUES ( 'PAY-1001',
            (
                SELECT invoice_id
-                 FROM invoice_header
+                 FROM t_invoice_header
                 WHERE invoice_number = 'INV-1001'
            ),
            DATE '2026-01-20',
@@ -1515,7 +1515,7 @@ INSERT INTO payment_transaction (
            'ACTIVE',
            1648.00 );
 
-INSERT INTO payment_transaction (
+INSERT INTO t_payment_transaction (
     payment_reference,
     invoice_id,
     payment_date,
@@ -1525,7 +1525,7 @@ INSERT INTO payment_transaction (
 ) VALUES ( 'PAY-1002',
            (
                SELECT invoice_id
-                 FROM invoice_header
+                 FROM t_invoice_header
                 WHERE invoice_number = 'INV-1002'
            ),
            DATE '2026-01-28',
@@ -1533,7 +1533,7 @@ INSERT INTO payment_transaction (
            'ACTIVE',
            1000.00 );
 
-INSERT INTO payment_transaction (
+INSERT INTO t_payment_transaction (
     payment_reference,
     invoice_id,
     payment_date,
@@ -1543,7 +1543,7 @@ INSERT INTO payment_transaction (
 ) VALUES ( 'PAY-1003',
            (
                SELECT invoice_id
-                 FROM invoice_header
+                 FROM t_invoice_header
                 WHERE invoice_number = 'INV-1002'
            ),
            DATE '2026-02-05',
@@ -1551,7 +1551,7 @@ INSERT INTO payment_transaction (
            'ACTIVE',
            718.00 );
 
-INSERT INTO payment_transaction (
+INSERT INTO t_payment_transaction (
     payment_reference,
     invoice_id,
     payment_date,
@@ -1561,7 +1561,7 @@ INSERT INTO payment_transaction (
 ) VALUES ( 'PAY-1004',
            (
                SELECT invoice_id
-                 FROM invoice_header
+                 FROM t_invoice_header
                 WHERE invoice_number = 'INV-1003'
            ),
            DATE '2026-02-01',
@@ -1569,7 +1569,7 @@ INSERT INTO payment_transaction (
            'ACTIVE',
            648.00 );
 
-INSERT INTO payment_transaction (
+INSERT INTO t_payment_transaction (
     payment_reference,
     invoice_id,
     payment_date,
@@ -1579,7 +1579,7 @@ INSERT INTO payment_transaction (
 ) VALUES ( 'PAY-1005',
            (
                SELECT invoice_id
-                 FROM invoice_header
+                 FROM t_invoice_header
                 WHERE invoice_number = 'INV-1005'
            ),
            DATE '2026-02-20',
@@ -1587,7 +1587,7 @@ INSERT INTO payment_transaction (
            'ACTIVE',
            399.00 );
 
-INSERT INTO payment_transaction (
+INSERT INTO t_payment_transaction (
     payment_reference,
     invoice_id,
     payment_date,
@@ -1597,7 +1597,7 @@ INSERT INTO payment_transaction (
 ) VALUES ( 'PAY-1006',
            (
                SELECT invoice_id
-                 FROM invoice_header
+                 FROM t_invoice_header
                 WHERE invoice_number = 'INV-1006'
            ),
            DATE '2026-03-01',
@@ -1605,7 +1605,7 @@ INSERT INTO payment_transaction (
            'ACTIVE',
            1000.00 );
 
-INSERT INTO payment_transaction (
+INSERT INTO t_payment_transaction (
     payment_reference,
     invoice_id,
     payment_date,
@@ -1615,7 +1615,7 @@ INSERT INTO payment_transaction (
 ) VALUES ( 'PAY-1007',
            (
                SELECT invoice_id
-                 FROM invoice_header
+                 FROM t_invoice_header
                 WHERE invoice_number = 'INV-1006'
            ),
            DATE '2026-03-15',
@@ -1632,7 +1632,7 @@ pro    =========================================================
 -- -------------------------------------------------------------
 -- shipment_header
 -- -------------------------------------------------------------
-INSERT INTO shipment_header (
+INSERT INTO t_shipment_header (
     shipment_number,
     order_id,
     shipment_date,
@@ -1642,19 +1642,19 @@ INSERT INTO shipment_header (
 ) VALUES ( 'SHP-1001',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1001'
            ),
            DATE '2026-01-12',
            'ACTIVE',
            (
                SELECT shipping_address_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST1001'
            ),
            1648.00 );
 
-INSERT INTO shipment_header (
+INSERT INTO t_shipment_header (
     shipment_number,
     order_id,
     shipment_date,
@@ -1664,19 +1664,19 @@ INSERT INTO shipment_header (
 ) VALUES ( 'SHP-1002',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1002'
            ),
            DATE '2026-01-18',
            'ACTIVE',
            (
                SELECT shipping_address_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST1002'
            ),
            1718.00 );
 
-INSERT INTO shipment_header (
+INSERT INTO t_shipment_header (
     shipment_number,
     order_id,
     shipment_date,
@@ -1686,19 +1686,19 @@ INSERT INTO shipment_header (
 ) VALUES ( 'SHP-1003',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1003'
            ),
            DATE '2026-01-25',
            'ACTIVE',
            (
                SELECT shipping_address_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST2001'
            ),
            648.00 );
 
-INSERT INTO shipment_header (
+INSERT INTO t_shipment_header (
     shipment_number,
     order_id,
     shipment_date,
@@ -1708,19 +1708,19 @@ INSERT INTO shipment_header (
 ) VALUES ( 'SHP-1004',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1004'
            ),
            DATE '2026-02-05',
            'PENDING',
            (
                SELECT shipping_address_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST2002'
            ),
            219.00 );
 
-INSERT INTO shipment_header (
+INSERT INTO t_shipment_header (
     shipment_number,
     order_id,
     shipment_date,
@@ -1730,19 +1730,19 @@ INSERT INTO shipment_header (
 ) VALUES ( 'SHP-1005',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1005'
            ),
            DATE '2026-02-13',
            'ACTIVE',
            (
                SELECT shipping_address_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST3001'
            ),
            399.00 );
 
-INSERT INTO shipment_header (
+INSERT INTO t_shipment_header (
     shipment_number,
     order_id,
     shipment_date,
@@ -1752,19 +1752,19 @@ INSERT INTO shipment_header (
 ) VALUES ( 'SHP-1006',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1006'
            ),
            DATE '2026-02-23',
            'ACTIVE',
            (
                SELECT shipping_address_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST4001'
            ),
            1578.00 );
 
-INSERT INTO shipment_header (
+INSERT INTO t_shipment_header (
     shipment_number,
     order_id,
     shipment_date,
@@ -1774,19 +1774,19 @@ INSERT INTO shipment_header (
 ) VALUES ( 'SHP-1007',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1007'
            ),
            DATE '2026-03-03',
            'SUSPENDED',
            (
                SELECT shipping_address_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST4002'
            ),
            79.00 );
 
-INSERT INTO shipment_header (
+INSERT INTO t_shipment_header (
     shipment_number,
     order_id,
     shipment_date,
@@ -1796,14 +1796,14 @@ INSERT INTO shipment_header (
 ) VALUES ( 'SHP-1008',
            (
                SELECT order_id
-                 FROM order_header
+                 FROM t_order_header
                 WHERE order_number = 'ORD-1008'
            ),
            DATE '2026-03-12',
            'INACTIVE',
            (
                SELECT shipping_address_id
-                 FROM customer_account
+                 FROM t_customer_account
                 WHERE customer_account_number = 'CUST5001'
            ),
            1799.00 );
@@ -1811,7 +1811,7 @@ INSERT INTO shipment_header (
 -- -------------------------------------------------------------
 -- inventory_balance
 -- -------------------------------------------------------------
-INSERT INTO inventory_balance (
+INSERT INTO t_inventory_balance (
     product_sku_id,
     location_code,
     quantity_on_hand,
@@ -1819,7 +1819,7 @@ INSERT INTO inventory_balance (
     status_code
 ) VALUES ( (
     SELECT product_sku_id
-      FROM product_sku
+      FROM t_product_sku
      WHERE sku_code = 'LAPTOP-13-256'
 ),
            'CLT-DC',
@@ -1827,7 +1827,7 @@ INSERT INTO inventory_balance (
            5,
            'ACTIVE' );
 
-INSERT INTO inventory_balance (
+INSERT INTO t_inventory_balance (
     product_sku_id,
     location_code,
     quantity_on_hand,
@@ -1835,7 +1835,7 @@ INSERT INTO inventory_balance (
     status_code
 ) VALUES ( (
     SELECT product_sku_id
-      FROM product_sku
+      FROM t_product_sku
      WHERE sku_code = 'LAPTOP-15-512'
 ),
            'CLT-DC',
@@ -1843,7 +1843,7 @@ INSERT INTO inventory_balance (
            4,
            'ACTIVE' );
 
-INSERT INTO inventory_balance (
+INSERT INTO t_inventory_balance (
     product_sku_id,
     location_code,
     quantity_on_hand,
@@ -1851,7 +1851,7 @@ INSERT INTO inventory_balance (
     status_code
 ) VALUES ( (
     SELECT product_sku_id
-      FROM product_sku
+      FROM t_product_sku
      WHERE sku_code = 'MONITOR-24-FHD'
 ),
            'CLT-DC',
@@ -1859,7 +1859,7 @@ INSERT INTO inventory_balance (
            8,
            'ACTIVE' );
 
-INSERT INTO inventory_balance (
+INSERT INTO t_inventory_balance (
     product_sku_id,
     location_code,
     quantity_on_hand,
@@ -1867,7 +1867,7 @@ INSERT INTO inventory_balance (
     status_code
 ) VALUES ( (
     SELECT product_sku_id
-      FROM product_sku
+      FROM t_product_sku
      WHERE sku_code = 'MONITOR-27-QHD'
 ),
            'RDU-DC',
@@ -1875,7 +1875,7 @@ INSERT INTO inventory_balance (
            5,
            'ACTIVE' );
 
-INSERT INTO inventory_balance (
+INSERT INTO t_inventory_balance (
     product_sku_id,
     location_code,
     quantity_on_hand,
@@ -1883,7 +1883,7 @@ INSERT INTO inventory_balance (
     status_code
 ) VALUES ( (
     SELECT product_sku_id
-      FROM product_sku
+      FROM t_product_sku
      WHERE sku_code = 'DOCK-USB-C-90W'
 ),
            'CLT-DC',
@@ -1891,7 +1891,7 @@ INSERT INTO inventory_balance (
            6,
            'ACTIVE' );
 
-INSERT INTO inventory_balance (
+INSERT INTO t_inventory_balance (
     product_sku_id,
     location_code,
     quantity_on_hand,
@@ -1899,7 +1899,7 @@ INSERT INTO inventory_balance (
     status_code
 ) VALUES ( (
     SELECT product_sku_id
-      FROM product_sku
+      FROM t_product_sku
      WHERE sku_code = 'KEYBOARD-WL-BLK'
 ),
            'CLT-DC',
@@ -1907,7 +1907,7 @@ INSERT INTO inventory_balance (
            10,
            'ACTIVE' );
 
-INSERT INTO inventory_balance (
+INSERT INTO t_inventory_balance (
     product_sku_id,
     location_code,
     quantity_on_hand,
@@ -1915,7 +1915,7 @@ INSERT INTO inventory_balance (
     status_code
 ) VALUES ( (
     SELECT product_sku_id
-      FROM product_sku
+      FROM t_product_sku
      WHERE sku_code = 'KEYBOARD-WL-WHT'
 ),
            'RDU-DC',
@@ -1923,7 +1923,7 @@ INSERT INTO inventory_balance (
            8,
            'ACTIVE' );
 
-INSERT INTO inventory_balance (
+INSERT INTO t_inventory_balance (
     product_sku_id,
     location_code,
     quantity_on_hand,
@@ -1931,7 +1931,7 @@ INSERT INTO inventory_balance (
     status_code
 ) VALUES ( (
     SELECT product_sku_id
-      FROM product_sku
+      FROM t_product_sku
      WHERE sku_code = 'DESKTOP-I7-32GB'
 ),
            'CLT-DC',

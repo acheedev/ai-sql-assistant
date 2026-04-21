@@ -1,4 +1,4 @@
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -16,7 +16,7 @@ INSERT INTO semantic_object (
            20,
            'ACTIVE' );
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -35,7 +35,7 @@ INSERT INTO semantic_object (
            'ACTIVE' );
 COMMIT;
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -53,7 +53,7 @@ INSERT INTO semantic_object (
            15,
            'ACTIVE' );
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -73,7 +73,7 @@ INSERT INTO semantic_object (
 
 COMMIT;
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -91,7 +91,7 @@ INSERT INTO semantic_object (
            30,
            'ACTIVE' );
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -111,7 +111,7 @@ INSERT INTO semantic_object (
 
 COMMIT;
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -129,7 +129,7 @@ INSERT INTO semantic_object (
            12,
            'ACTIVE' );
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -147,7 +147,7 @@ INSERT INTO semantic_object (
            14,
            'ACTIVE' );
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -165,7 +165,7 @@ INSERT INTO semantic_object (
            16,
            'ACTIVE' );
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -183,7 +183,7 @@ INSERT INTO semantic_object (
            17,
            'ACTIVE' );
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -203,7 +203,7 @@ INSERT INTO semantic_object (
 
 COMMIT;
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -221,7 +221,7 @@ INSERT INTO semantic_object (
            10,
            'ACTIVE' );
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -239,7 +239,7 @@ INSERT INTO semantic_object (
            20,
            'ACTIVE' );
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,
@@ -257,7 +257,7 @@ INSERT INTO semantic_object (
            40,
            'ACTIVE' );
 
-INSERT INTO semantic_object (
+INSERT INTO t_semantic_object (
     object_name,
     object_type,
     business_name,

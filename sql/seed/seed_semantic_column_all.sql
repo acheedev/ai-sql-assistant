@@ -1,7 +1,7 @@
 -- -------------------------------------------------------------
 -- V_SHIPMENT_HEADER
 -- -------------------------------------------------------------
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -19,7 +19,7 @@ INSERT INTO semantic_column (
            'Y',
            90 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -37,7 +37,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -55,7 +55,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -73,7 +73,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -91,7 +91,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -109,7 +109,7 @@ INSERT INTO semantic_column (
            'Y',
            50 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -130,7 +130,7 @@ INSERT INTO semantic_column (
 -- -------------------------------------------------------------
 -- V_INVENTORY_BALANCE
 -- -------------------------------------------------------------
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -148,7 +148,7 @@ INSERT INTO semantic_column (
            'Y',
            90 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -166,7 +166,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -184,7 +184,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -202,7 +202,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -220,7 +220,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -238,7 +238,7 @@ INSERT INTO semantic_column (
            'Y',
            50 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -269,7 +269,7 @@ COMMIT;
 -- -------------------------------------------------------------
 -- V_ORDER_HEADER
 -- -------------------------------------------------------------
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -287,7 +287,7 @@ INSERT INTO semantic_column (
            'Y',
            90 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -305,7 +305,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -323,7 +323,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -341,7 +341,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -359,7 +359,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -380,7 +380,7 @@ INSERT INTO semantic_column (
 -- -------------------------------------------------------------
 -- V_ORDER_LINE_ITEM
 -- -------------------------------------------------------------
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -398,7 +398,7 @@ INSERT INTO semantic_column (
            'Y',
            90 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -416,7 +416,7 @@ INSERT INTO semantic_column (
            'Y',
            80 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -434,7 +434,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -452,7 +452,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -470,7 +470,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -488,7 +488,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -506,7 +506,7 @@ INSERT INTO semantic_column (
            'Y',
            50 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -527,7 +527,7 @@ INSERT INTO semantic_column (
 -- -------------------------------------------------------------
 -- V_PRODUCT_MASTER
 -- -------------------------------------------------------------
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -545,7 +545,7 @@ INSERT INTO semantic_column (
            'Y',
            90 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -563,7 +563,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -581,7 +581,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -599,7 +599,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -617,7 +617,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -638,7 +638,7 @@ INSERT INTO semantic_column (
 -- -------------------------------------------------------------
 -- V_PRODUCT_SKU
 -- -------------------------------------------------------------
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -656,7 +656,7 @@ INSERT INTO semantic_column (
            'Y',
            90 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -674,7 +674,7 @@ INSERT INTO semantic_column (
            'Y',
            80 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -692,7 +692,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -710,7 +710,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -728,7 +728,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -746,7 +746,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -767,7 +767,7 @@ INSERT INTO semantic_column (
 -- -------------------------------------------------------------
 -- V_ORDER_DETAIL
 -- -------------------------------------------------------------
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -785,7 +785,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -803,7 +803,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -821,7 +821,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -839,7 +839,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -857,7 +857,7 @@ INSERT INTO semantic_column (
            'Y',
            50 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -875,7 +875,7 @@ INSERT INTO semantic_column (
            'Y',
            60 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -893,7 +893,7 @@ INSERT INTO semantic_column (
            'Y',
            70 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -911,7 +911,7 @@ INSERT INTO semantic_column (
            'Y',
            80 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -929,7 +929,7 @@ INSERT INTO semantic_column (
            'Y',
            90 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -947,7 +947,7 @@ INSERT INTO semantic_column (
            'Y',
            100 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -965,7 +965,7 @@ INSERT INTO semantic_column (
            'Y',
            110 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -983,7 +983,7 @@ INSERT INTO semantic_column (
            'Y',
            120 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1001,7 +1001,7 @@ INSERT INTO semantic_column (
            'Y',
            130 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1022,7 +1022,7 @@ INSERT INTO semantic_column (
 -- -------------------------------------------------------------
 -- V_CUSTOMER_ORDER_SUMMARY
 -- -------------------------------------------------------------
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1040,7 +1040,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1058,7 +1058,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1076,7 +1076,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1094,7 +1094,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1112,7 +1112,7 @@ INSERT INTO semantic_column (
            'Y',
            50 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1130,7 +1130,7 @@ INSERT INTO semantic_column (
            'Y',
            60 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1148,7 +1148,7 @@ INSERT INTO semantic_column (
            'Y',
            70 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1166,7 +1166,7 @@ INSERT INTO semantic_column (
            'Y',
            80 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1187,7 +1187,7 @@ INSERT INTO semantic_column (
 -- -------------------------------------------------------------
 -- V_INVENTORY_STATUS
 -- -------------------------------------------------------------
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1205,7 +1205,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1223,7 +1223,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1241,7 +1241,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1259,7 +1259,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1277,7 +1277,7 @@ INSERT INTO semantic_column (
            'Y',
            50 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1295,7 +1295,7 @@ INSERT INTO semantic_column (
            'Y',
            60 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1313,7 +1313,7 @@ INSERT INTO semantic_column (
            'Y',
            70 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1331,7 +1331,7 @@ INSERT INTO semantic_column (
            'Y',
            80 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1352,7 +1352,7 @@ INSERT INTO semantic_column (
 -- -------------------------------------------------------------
 -- V_INVOICE_HEADER
 -- -------------------------------------------------------------
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1370,7 +1370,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1388,7 +1388,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1406,7 +1406,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1424,7 +1424,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1442,7 +1442,7 @@ INSERT INTO semantic_column (
            'Y',
            50 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1460,7 +1460,7 @@ INSERT INTO semantic_column (
            'Y',
            60 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1481,7 +1481,7 @@ INSERT INTO semantic_column (
 -- -------------------------------------------------------------
 -- V_PAYMENT_TRANSACTION
 -- -------------------------------------------------------------
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1499,7 +1499,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1517,7 +1517,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1535,7 +1535,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1553,7 +1553,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1571,7 +1571,7 @@ INSERT INTO semantic_column (
            'Y',
            50 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1589,7 +1589,7 @@ INSERT INTO semantic_column (
            'Y',
            60 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1607,7 +1607,7 @@ INSERT INTO semantic_column (
            'Y',
            90 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1625,7 +1625,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1643,7 +1643,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1661,7 +1661,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1679,7 +1679,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1697,7 +1697,7 @@ INSERT INTO semantic_column (
            'Y',
            50 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1715,7 +1715,7 @@ INSERT INTO semantic_column (
            'Y',
            90 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1733,7 +1733,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1751,7 +1751,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1769,7 +1769,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1787,7 +1787,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1805,7 +1805,7 @@ INSERT INTO semantic_column (
            'Y',
            90 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1823,7 +1823,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1841,7 +1841,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1859,7 +1859,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1877,7 +1877,7 @@ INSERT INTO semantic_column (
            'Y',
            40 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1895,7 +1895,7 @@ INSERT INTO semantic_column (
            'Y',
            50 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1913,7 +1913,7 @@ INSERT INTO semantic_column (
            'Y',
            10 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1931,7 +1931,7 @@ INSERT INTO semantic_column (
            'Y',
            20 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,
@@ -1949,7 +1949,7 @@ INSERT INTO semantic_column (
            'Y',
            30 );
 
-INSERT INTO semantic_column (
+INSERT INTO t_semantic_column (
     object_name,
     column_name,
     business_name,

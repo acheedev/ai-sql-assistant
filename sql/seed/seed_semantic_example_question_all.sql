@@ -1,4 +1,4 @@
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -17,7 +17,7 @@ order by shipment_date desc, shipment_number
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -35,7 +35,7 @@ order by status_code, shipment_date desc
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -52,7 +52,7 @@ order by order_id, shipment_number
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -71,7 +71,7 @@ order by location_code, product_sku_id
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -91,7 +91,7 @@ order by quantity_on_hand, product_sku_id
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -112,7 +112,7 @@ order by location_code, product_sku_id
 
 COMMIT;
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -131,7 +131,7 @@ order by order_date desc, order_number
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -150,7 +150,7 @@ order by customer_account_id, order_date desc
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -167,7 +167,7 @@ order by status_code
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -188,7 +188,7 @@ order by order_id, line_number
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -205,7 +205,7 @@ order by total_quantity desc, product_sku_id
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -224,7 +224,7 @@ order by order_id, line_number
 
 COMMIT;
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -243,7 +243,7 @@ order by product_name
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -261,7 +261,7 @@ order by product_category, product_name
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -280,7 +280,7 @@ order by sku_name
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -299,7 +299,7 @@ where sku_code = :sku_code
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -318,7 +318,7 @@ order by unit_price desc, sku_name
 
 COMMIT;
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -340,7 +340,7 @@ order by order_date desc, order_number, line_number
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -359,7 +359,7 @@ order by total_order_amount desc, customer_name
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -379,7 +379,7 @@ order by customer_name
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -401,7 +401,7 @@ order by location_code, quantity_on_hand, sku_code
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -421,7 +421,7 @@ order by due_date, invoice_number
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -438,7 +438,7 @@ order by status_code
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -456,7 +456,7 @@ order by total_payment_amount desc, payment_method
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -478,7 +478,7 @@ order by payment_date desc, payment_reference
 
 COMMIT;
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -497,7 +497,7 @@ order by customer_name
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -514,7 +514,7 @@ order by organization_id, customer_name
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -532,7 +532,7 @@ where organization_code = :organization_code
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,
@@ -550,7 +550,7 @@ order by status_type, status_code
 ]',
            'Y' );
 
-INSERT INTO semantic_example_question (
+INSERT INTO t_semantic_example_question (
     question_text,
     preferred_object_name,
     exemplar_sql,

@@ -1,4 +1,4 @@
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -6,7 +6,7 @@ INSERT INTO semantic_object_alias (
            'shipment',
            25 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -14,7 +14,7 @@ INSERT INTO semantic_object_alias (
            'shipments',
            22 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -22,7 +22,7 @@ INSERT INTO semantic_object_alias (
            'delivery',
            18 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -30,7 +30,7 @@ INSERT INTO semantic_object_alias (
            'delivered order',
            14 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -38,7 +38,7 @@ INSERT INTO semantic_object_alias (
            'inventory',
            26 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -46,7 +46,7 @@ INSERT INTO semantic_object_alias (
            'inventory balance',
            28 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -54,7 +54,7 @@ INSERT INTO semantic_object_alias (
            'stock',
            24 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -62,7 +62,7 @@ INSERT INTO semantic_object_alias (
            'on hand',
            20 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -72,7 +72,7 @@ INSERT INTO semantic_object_alias (
 
 COMMIT;
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -80,7 +80,7 @@ INSERT INTO semantic_object_alias (
            'order',
            25 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -88,7 +88,7 @@ INSERT INTO semantic_object_alias (
            'orders',
            22 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -96,7 +96,7 @@ INSERT INTO semantic_object_alias (
            'customer order',
            24 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -104,7 +104,7 @@ INSERT INTO semantic_object_alias (
            'sales order',
            20 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -112,7 +112,7 @@ INSERT INTO semantic_object_alias (
            'purchase',
            10 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -120,7 +120,7 @@ INSERT INTO semantic_object_alias (
            'order line',
            24 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -128,7 +128,7 @@ INSERT INTO semantic_object_alias (
            'order line item',
            26 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -136,7 +136,7 @@ INSERT INTO semantic_object_alias (
            'line item',
            22 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -144,7 +144,7 @@ INSERT INTO semantic_object_alias (
            'ordered item',
            18 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -154,7 +154,7 @@ INSERT INTO semantic_object_alias (
 
 COMMIT;
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -162,7 +162,7 @@ INSERT INTO semantic_object_alias (
            'product',
            20 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -170,7 +170,7 @@ INSERT INTO semantic_object_alias (
            'products',
            18 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -178,7 +178,7 @@ INSERT INTO semantic_object_alias (
            'product master',
            22 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -186,7 +186,7 @@ INSERT INTO semantic_object_alias (
            'item',
            10 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -194,7 +194,7 @@ INSERT INTO semantic_object_alias (
            'sku',
            25 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -202,7 +202,7 @@ INSERT INTO semantic_object_alias (
            'product sku',
            26 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -210,7 +210,7 @@ INSERT INTO semantic_object_alias (
            'stock keeping unit',
            20 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -218,7 +218,7 @@ INSERT INTO semantic_object_alias (
            'variant',
            16 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -228,7 +228,7 @@ INSERT INTO semantic_object_alias (
 
 COMMIT;
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -236,7 +236,7 @@ INSERT INTO semantic_object_alias (
            'order detail',
            26 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -244,7 +244,7 @@ INSERT INTO semantic_object_alias (
            'order details',
            24 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -252,7 +252,7 @@ INSERT INTO semantic_object_alias (
            'sales detail',
            18 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -260,7 +260,7 @@ INSERT INTO semantic_object_alias (
            'order lines with customer',
            16 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -268,7 +268,7 @@ INSERT INTO semantic_object_alias (
            'customer summary',
            18 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -276,7 +276,7 @@ INSERT INTO semantic_object_alias (
            'customer order summary',
            28 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -284,7 +284,7 @@ INSERT INTO semantic_object_alias (
            'top customers',
            22 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -292,7 +292,7 @@ INSERT INTO semantic_object_alias (
            'customer revenue summary',
            20 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -300,7 +300,7 @@ INSERT INTO semantic_object_alias (
            'inventory status',
            28 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -308,7 +308,7 @@ INSERT INTO semantic_object_alias (
            'stock status',
            24 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -316,7 +316,7 @@ INSERT INTO semantic_object_alias (
            'low stock',
            22 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -324,7 +324,7 @@ INSERT INTO semantic_object_alias (
            'out of stock',
            24 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -332,7 +332,7 @@ INSERT INTO semantic_object_alias (
            'invoice',
            26 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -340,7 +340,7 @@ INSERT INTO semantic_object_alias (
            'invoices',
            22 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -348,7 +348,7 @@ INSERT INTO semantic_object_alias (
            'billing',
            18 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -356,7 +356,7 @@ INSERT INTO semantic_object_alias (
            'amount due',
            18 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -364,7 +364,7 @@ INSERT INTO semantic_object_alias (
            'payment',
            26 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -372,7 +372,7 @@ INSERT INTO semantic_object_alias (
            'payments',
            22 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -380,7 +380,7 @@ INSERT INTO semantic_object_alias (
            'payment transaction',
            28 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -390,28 +390,28 @@ INSERT INTO semantic_object_alias (
 
 COMMIT;
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
 ) VALUES ( 'V_CUSTOMER_ACCOUNT',
            'customer',
            20 );
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
 ) VALUES ( 'V_CUSTOMER_ACCOUNT',
            'customer account',
            25 );
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
 ) VALUES ( 'V_CUSTOMER_ACCOUNT',
            'account',
            15 );
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -419,21 +419,21 @@ INSERT INTO semantic_object_alias (
            'client',
            12 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
 ) VALUES ( 'V_ORGANIZATION',
            'organization',
            20 );
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
 ) VALUES ( 'V_ORGANIZATION',
            'org',
            18 );
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -441,14 +441,14 @@ INSERT INTO semantic_object_alias (
            'company',
            15 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
 ) VALUES ( 'V_ADDRESS_MASTER',
            'address',
            20 );
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
@@ -456,21 +456,21 @@ INSERT INTO semantic_object_alias (
            'location',
            10 );
 
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
 ) VALUES ( 'V_STATUS_CODE_LOOKUP',
            'status',
            20 );
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
 ) VALUES ( 'V_STATUS_CODE_LOOKUP',
            'status code',
            25 );
-INSERT INTO semantic_object_alias (
+INSERT INTO t_semantic_object_alias (
     object_name,
     alias_term,
     alias_weight
