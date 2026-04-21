@@ -1,0 +1,463 @@
+question,status,error_message,sql,row_number,explanation,order_number,customer_account_id,order_date,status_code,order_total_amount,invoice_number,order_id,invoice_date,due_date,invoice_total_amount,shipment_number,shipment_date,shipment_total_amount,product_code,product_name,product_category,location_code,sku_code,sku_name,quantity_on_hand,reorder_threshold,inventory_health,payment_reference,invoice_id,payment_date,payment_method,payment_amount,customer_account_number,customer_name,organization_name,quantity,unit_price,line_total,order_status_code,organization_id,payment_status,invoice_status,shipment_status,order_status,most_recent_order_number,most_recent_order_date,address_line1,city,state_province,postal_code,country_code,total_revenue,customer_type,order_count,total_order_amount,first_order_date,total_paid_amount,total_outstanding_amount,inventory_value
+Show all fulfilled orders,ok,,"select
+    ORDER_NUMBER,
+    CUSTOMER_ACCOUNT_ID,
+    ORDER_DATE,
+    STATUS_CODE,
+    ORDER_TOTAL_AMOUNT
+from v_order_header
+where STATUS_CODE = 'FULFILLED'
+order by ORDER_DATE desc, ORDER_NUMBER",1,"- Four orders have been fulfilled, with order dates ranging from early January to late February 2026.  
+- The highest order total among fulfilled orders is $1,718, indicating strong sales from customer account 2.  
+- Customer account 6 placed the most recent fulfilled order, which also has a substantial value of $1,578.  
+- Overall, fulfilled orders show consistent high-value transactions, suggesting reliable revenue from these customers.",ORD-1006,6,2026-02-20 00:00:00,FULFILLED,1578.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show all fulfilled orders,ok,,,2,,ORD-1003,3,2026-01-22 00:00:00,FULFILLED,648.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show all fulfilled orders,ok,,,3,,ORD-1002,2,2026-01-15 00:00:00,FULFILLED,1718.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show all fulfilled orders,ok,,,4,,ORD-1001,1,2026-01-10 00:00:00,FULFILLED,1648.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show overdue invoices,ok,,"select
+    invoice_number,
+    customer_account_id,
+    order_id,
+    invoice_date,
+    due_date,
+    status_code,
+    invoice_total_amount
+from v_invoice_header
+where status_code = 'OVERDUE'
+order by due_date, invoice_number",1,"- There is currently one overdue invoice, indicating limited outstanding payment issues at this time.  
+- The overdue invoice is associated with customer account 5, suggesting a potential focus area for collections.  
+- The invoice amount of $399 is moderate, highlighting a mid-sized receivable that requires follow-up.  
+- The due date was recent, implying the overdue status is a new development and may be resolved soon.",,5,,OVERDUE,,INV-1005,5,2026-02-14 00:00:00,2026-03-16 00:00:00,399.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show delivered shipments,ok,,"select
+    shipment_number,
+    order_id,
+    shipment_date,
+    status_code,
+    shipment_total_amount
+from v_shipment_header
+where status_code = 'DELIVERED'
+order by shipment_date desc, shipment_number",1,"- Four shipments have been delivered, with dates ranging from mid-January to late February 2026.  
+- The highest shipment value is $1,718, indicating a significant order contributing to revenue.  
+- Shipment volumes appear consistent, with total amounts generally above $600, reflecting steady business activity.  
+- The most recent delivery (late February) also has a strong shipment value, suggesting ongoing robust sales.",,,,DELIVERED,,,6,,,,SHP-1006,2026-02-23 00:00:00,1578.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show delivered shipments,ok,,,2,,,,,DELIVERED,,,3,,,,SHP-1003,2026-01-25 00:00:00,648.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show delivered shipments,ok,,,3,,,,,DELIVERED,,,2,,,,SHP-1002,2026-01-18 00:00:00,1718.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show delivered shipments,ok,,,4,,,,,DELIVERED,,,1,,,,SHP-1001,2026-01-12 00:00:00,1648.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show discontinued products,ok,,"select
+    product_code,
+    product_name,
+    product_category,
+    status_code
+from v_product_master
+where status_code = 'DISCONTINUED'
+order by product_name",1,"- Only one product, the Desktop Workstation, is currently discontinued, indicating limited product phase-out activity.  
+- The discontinued item belongs to the hardware category, suggesting potential shifts or updates in hardware offerings.  
+- The minimal number of discontinued products may reflect stable product lines or recent portfolio reviews.  
+- Monitoring this trend can help anticipate future product lifecycle changes or inventory adjustments.",,,,DISCONTINUED,,,,,,,,,,DESKTOP,Desktop Workstation,HARDWARE,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show low stock items by location,ok,,"select
+    location_code,
+    sku_code,
+    sku_name,
+    product_name,
+    quantity_on_hand,
+    reorder_threshold,
+    inventory_health
+from v_inventory_status
+where inventory_health in ('LOW_STOCK', 'OUT_OF_STOCK')
+order by location_code, quantity_on_hand, sku_code",1,"- Multiple locations are experiencing low or out-of-stock inventory, with CLT-DC showing several items nearing reorder thresholds.  
+- The RDU-DC location has a critical out-of-stock situation for the Desktop Monitor 27 QHD, potentially impacting sales or operations.  
+- Wireless peripherals and docking stations are consistently low across locations, indicating a need to review supply chain or demand forecasting for these categories.  
+- Overall, inventory management should prioritize replenishing key tech products to avoid stockouts and maintain service levels.",,,,,,,,,,,,,,,Desktop Workstation,,CLT-DC,DESKTOP-I7-32GB,Desktop Workstation i7 32GB,2,3,LOW_STOCK,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show low stock items by location,ok,,,2,,,,,,,,,,,,,,,,Desktop Monitor,,CLT-DC,MONITOR-27-QHD,Desktop Monitor 27 QHD,3,5,LOW_STOCK,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show low stock items by location,ok,,,3,,,,,,,,,,,,,,,,Wireless Keyboard,,CLT-DC,KEYBOARD-WL-WHT,Wireless Keyboard White,4,8,LOW_STOCK,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show low stock items by location,ok,,,4,,,,,,,,,,,,,,,,Desktop Monitor,,RDU-DC,MONITOR-27-QHD,Desktop Monitor 27 QHD,0,5,OUT_OF_STOCK,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show low stock items by location,ok,,,5,,,,,,,,,,,,,,,,USB-C Docking Station,,RDU-DC,DOCK-USB-C-90W,USB-C Dock 90W,2,6,LOW_STOCK,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show out of stock items,ok,,"select
+    location_code,
+    sku_code,
+    sku_name,
+    product_name,
+    quantity_on_hand,
+    reorder_threshold,
+    inventory_health
+from v_inventory_status
+where inventory_health = 'OUT_OF_STOCK'
+order by location_code, sku_code, product_name",1,"- The Desktop Monitor 27 QHD at the RDU-DC location is currently out of stock, with no units available on hand.  
+- The reorder threshold for this item is set at 5, indicating a need to replenish inventory soon to avoid potential sales loss.  
+- This stockout could impact customer satisfaction and sales for desktop monitors at this distribution center.  
+- Monitoring and addressing inventory levels for high-demand items like this is critical to maintaining supply chain efficiency.",,,,,,,,,,,,,,,Desktop Monitor,,RDU-DC,MONITOR-27-QHD,Desktop Monitor 27 QHD,0,5,OUT_OF_STOCK,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show failed payments,ok,,"select
+    PAYMENT_REFERENCE,
+    INVOICE_ID,
+    PAYMENT_DATE,
+    PAYMENT_METHOD,
+    PAYMENT_AMOUNT,
+    STATUS_CODE
+from v_payment_transaction
+where STATUS_CODE = 'FAILED'
+order by PAYMENT_DATE desc, PAYMENT_REFERENCE",1,"- There was a single failed payment recorded, indicating a low failure rate or recent resolution of issues.  
+- The failed payment was processed via ACH, suggesting potential review of this payment method's reliability.  
+- The amount involved in the failed transaction was relatively substantial, which could impact cash flow if failures persist.  
+- Monitoring failed payments closely can help identify and address underlying causes to improve payment success rates.",,,,FAILED,,,,,,,,,,,,,,,,,,,PAY-1005,5,2026-02-25 00:00:00,ACH,399.0,,,,,,,,,,,,,,,,,,,,,,,,,,,
+List customers with no orders,db_error,"Database execution failed: ORA-00904: ""CUSTOMER_ACCOUNT_NUMBER"": invalid identifier
+Help: https://docs.oracle.com/error-help/db/ora-00904/","select
+    ca.customer_account_number,
+    ca.customer_name,
+    ca.customer_type,
+    ca.status_code,
+    o.order_count,
+    o.total_order_amount
+from v_customer_account ca
+left join (
+    select
+        customer_account_number,
+        count(order_id) as order_count,
+        sum(order_total_amount) as total_order_amount
+    from v_order_header
+    group by customer_account_number
+) o on ca.customer_account_number = o.customer_account_number
+where o.order_count is null
+order by ca.customer_name",0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show draft orders,ok,,"select
+    order_number,
+    customer_account_id,
+    order_date,
+    status_code,
+    order_total_amount
+from v_order_header
+where status_code = 'DRAFT'
+order by order_date desc, order_number",1,"- There is currently one draft order pending, indicating limited activity in the draft stage.  
+- The draft order has a relatively high total amount, suggesting a potentially significant upcoming sale.  
+- The order is associated with a single customer account, which may warrant follow-up to encourage completion.  
+- The draft was created recently, indicating active order processing or recent customer interest.",ORD-1009,1,2026-04-05 00:00:00,DRAFT,2398.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show cancelled orders,ok,,"select
+    order_number,
+    customer_account_id,
+    order_date,
+    status_code,
+    order_total_amount
+from v_order_header
+where status_code = 'CANCELLED'
+order by order_date desc, order_number",1,"- Only one order has been cancelled, indicating a low cancellation rate for the period analyzed.  
+- The cancelled order is relatively recent, suggesting cancellations may be isolated incidents rather than a trend.  
+- The order value of the cancelled transaction is moderate, implying limited financial impact from cancellations so far.  
+- No patterns of frequent cancellations by specific customers or dates are evident from the current data.",ORD-1007,7,2026-03-01 00:00:00,CANCELLED,79.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show all orders for customers in Charlotte,ok,,"select
+    od.order_number,
+    od.order_date,
+    od.customer_account_number,
+    od.customer_name,
+    od.organization_name,
+    od.sku_code,
+    od.sku_name,
+    od.product_name,
+    od.quantity,
+    od.unit_price,
+    od.line_total,
+    od.order_status_code
+from v_order_detail od
+join v_customer_account ca on od.customer_account_number = ca.customer_account_number
+join v_address_master addr on ca.customer_account_id = addr.address_id
+where addr.city = 'Charlotte'
+order by od.order_date desc, od.order_number",1,"- Orders from customers in Charlotte primarily come from two divisions of Acme Manufacturing: East and West.  
+- The most recent order (April 2026) is still in draft status, indicating potential pending sales or delayed processing.  
+- Business laptops are the top-selling product, appearing consistently across multiple orders and divisions.  
+- Order quantities vary, but most orders include multiple product types, suggesting diverse customer needs within single transactions.",ORD-1009,,2026-04-05 00:00:00,,,,,,,,,,,,Business Laptop,,,LAPTOP-13-256,Business Laptop 13 256GB,,,,,,,,,CUST1001,Acme East Division,Acme Manufacturing,2,1199.0,2398.0,DRAFT,,,,,,,,,,,,,,,,,,,,
+Show all orders for customers in Charlotte,ok,,,2,,ORD-1002,,2026-01-15 00:00:00,,,,,,,,,,,,USB-C Docking Station,,,DOCK-USB-C-90W,USB-C Dock 90W,,,,,,,,,CUST1002,Acme West Division,Acme Manufacturing,1,140.0,140.0,FULFILLED,,,,,,,,,,,,,,,,,,,,
+Show all orders for customers in Charlotte,ok,,,3,,ORD-1002,,2026-01-15 00:00:00,,,,,,,,,,,,Business Laptop,,,LAPTOP-15-512,Business Laptop 15 512GB,,,,,,,,,CUST1002,Acme West Division,Acme Manufacturing,1,1499.0,1499.0,FULFILLED,,,,,,,,,,,,,,,,,,,,
+Show all orders for customers in Charlotte,ok,,,4,,ORD-1002,,2026-01-15 00:00:00,,,,,,,,,,,,Wireless Keyboard,,,KEYBOARD-WL-BLK,Wireless Keyboard Black,,,,,,,,,CUST1002,Acme West Division,Acme Manufacturing,1,79.0,79.0,FULFILLED,,,,,,,,,,,,,,,,,,,,
+Show all orders for customers in Charlotte,ok,,,5,,ORD-1001,,2026-01-10 00:00:00,,,,,,,,,,,,USB-C Docking Station,,,DOCK-USB-C-90W,USB-C Dock 90W,,,,,,,,,CUST1001,Acme East Division,Acme Manufacturing,1,200.0,200.0,FULFILLED,,,,,,,,,,,,,,,,,,,,
+Show all orders for customers in Charlotte,ok,,,6,,ORD-1001,,2026-01-10 00:00:00,,,,,,,,,,,,Business Laptop,,,LAPTOP-13-256,Business Laptop 13 256GB,,,,,,,,,CUST1001,Acme East Division,Acme Manufacturing,1,1199.0,1199.0,FULFILLED,,,,,,,,,,,,,,,,,,,,
+Show all orders for customers in Charlotte,ok,,,7,,ORD-1001,,2026-01-10 00:00:00,,,,,,,,,,,,Desktop Monitor,,,MONITOR-24-FHD,Desktop Monitor 24 FHD,,,,,,,,,CUST1001,Acme East Division,Acme Manufacturing,1,249.0,249.0,FULFILLED,,,,,,,,,,,,,,,,,,,,
+List customers by organization,ok,,"select
+    organization_id,
+    customer_account_number,
+    customer_name
+from v_customer_account
+order by organization_id, customer_name",1,"- Customers are grouped under five distinct organizations, each with multiple customer accounts reflecting diverse business units or divisions.  
+- Organization 1 and Organization 2 have multiple customer accounts with similar naming patterns, indicating regional or channel segmentation (e.g., East/West divisions, Online/Stores).  
+- Organization 4’s customers are healthcare-related entities, suggesting a focus on medical services within that organization.  
+- Organization 5 shows a split between enterprise and public sector customers, highlighting a strategic approach to different market segments.",,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST1001,Acme East Division,,,,,,1,,,,,,,,,,,,,,,,,,,
+List customers by organization,ok,,,2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST1002,Acme West Division,,,,,,1,,,,,,,,,,,,,,,,,,,
+List customers by organization,ok,,,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST2002,Blue Horizon Online,,,,,,2,,,,,,,,,,,,,,,,,,,
+List customers by organization,ok,,,4,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST2001,Blue Horizon Stores,,,,,,2,,,,,,,,,,,,,,,,,,,
+List customers by organization,ok,,,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST3001,Northwind Freight,,,,,,3,,,,,,,,,,,,,,,,,,,
+List customers by organization,ok,,,6,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST4001,Summit Primary Care,,,,,,4,,,,,,,,,,,,,,,,,,,
+List customers by organization,ok,,,7,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST4002,Summit Specialty Clinic,,,,,,4,,,,,,,,,,,,,,,,,,,
+List customers by organization,ok,,,8,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST5002,Legacy Enterprise,,,,,,5,,,,,,,,,,,,,,,,,,,
+List customers by organization,ok,,,9,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST5001,Legacy Public Sector,,,,,,5,,,,,,,,,,,,,,,,,,,
+Show invoices for Acme East Division,ok,,"select
+    inv.invoice_number,
+    ca.customer_account_number,
+    ca.customer_name,
+    inv.invoice_date,
+    inv.due_date,
+    inv.status_code,
+    inv.invoice_total_amount
+from v_invoice_header inv
+join v_customer_account ca on inv.customer_account_id = ca.customer_account_id
+where ca.organization_id in (
+    select organization_id
+    from v_organization
+    where organization_name = 'Acme East Division'
+)
+order by inv.invoice_date desc, inv.invoice_number",0,"- No invoices were found for the Acme East Division, indicating either no recent billing activity or potential data gaps for this segment.  
+- This absence of invoices could suggest a slowdown in sales or service delivery within the division.  
+- It may be necessary to verify if the division is active or if there are issues with data capture or account classification.",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show payments for overdue invoices,ok,,"select
+    pay.PAYMENT_REFERENCE,
+    pay.INVOICE_ID,
+    pay.PAYMENT_DATE,
+    pay.PAYMENT_METHOD,
+    pay.PAYMENT_AMOUNT,
+    pay.STATUS_CODE as PAYMENT_STATUS,
+    inv.INVOICE_NUMBER,
+    inv.DUE_DATE,
+    inv.INVOICE_TOTAL_AMOUNT,
+    inv.STATUS_CODE as INVOICE_STATUS
+from v_payment_transaction pay
+join v_invoice_header inv on pay.INVOICE_ID = inv.INVOICE_ID
+where inv.STATUS_CODE = 'OVERDUE'
+order by pay.PAYMENT_DATE desc, pay.PAYMENT_REFERENCE",1,"- There is a payment attempt for an overdue invoice totaling $399, but the payment failed.  
+- The invoice remains unpaid past its due date, indicating potential collection risk.  
+- No successful payments were recorded for overdue invoices, suggesting follow-up may be needed.  
+- The payment method used was ACH, which might require review for processing issues.",,,,,,INV-1005,,,2026-03-16 00:00:00,399.0,,,,,,,,,,,,,PAY-1005,5,2026-02-25 00:00:00,ACH,399.0,,,,,,,,,FAILED,OVERDUE,,,,,,,,,,,,,,,,,
+Show what has shipped but not been paid,ok,,"select 
+    sh.shipment_number,
+    sh.order_id,
+    sh.shipment_date,
+    sh.status_code as shipment_status,
+    inv.invoice_number,
+    inv.status_code as invoice_status,
+    inv.invoice_total_amount,
+    pay.payment_reference,
+    pay.status_code as payment_status
+from v_shipment_header sh
+join v_invoice_header inv on sh.order_id = inv.order_id
+left join v_payment_transaction pay on inv.invoice_id = pay.invoice_id
+where sh.status_code in ('IN_TRANSIT', 'DELIVERED')
+and (pay.invoice_id is null or pay.status_code != 'COMPLETED')
+order by sh.shipment_date desc, sh.shipment_number",1,"- Three shipments have been dispatched but remain unpaid, with statuses ranging from delivered to in transit.  
+- Payment statuses indicate delays or issues: one payment is pending, another has failed, and one shipment lacks any payment record.  
+- Invoice statuses vary, including issued and overdue, suggesting some customers may be behind on payments despite receiving goods.  
+- This highlights potential cash flow risks and the need for follow-up on outstanding payments to improve collections.",,,,,,INV-1006,6,,,1578.0,SHP-1006,2026-02-23 00:00:00,,,,,,,,,,,PAY-1007,,,,,,,,,,,,,PENDING,ISSUED,DELIVERED,,,,,,,,,,,,,,,,
+Show what has shipped but not been paid,ok,,,2,,,,,,,INV-1005,5,,,399.0,SHP-1005,2026-02-13 00:00:00,,,,,,,,,,,PAY-1005,,,,,,,,,,,,,FAILED,OVERDUE,IN_TRANSIT,,,,,,,,,,,,,,,,
+Show what has shipped but not been paid,ok,,,3,,,,,,,INV-1004,4,,,219.0,SHP-1004,2026-02-05 00:00:00,,,,,,,,,,,,,,,,,,,,,,,,,ISSUED,IN_TRANSIT,,,,,,,,,,,,,,,,
+Show orders with their shipment and invoice status,ok,,"select
+    oh.order_number,
+    oh.order_date,
+    oh.status_code as order_status,
+    sh.shipment_number,
+    sh.status_code as shipment_status,
+    inv.invoice_number,
+    inv.status_code as invoice_status
+from v_order_header oh
+left join v_shipment_header sh on oh.order_id = sh.order_id
+left join v_invoice_header inv on oh.order_id = inv.order_id
+order by oh.order_date desc, oh.order_number, sh.shipment_number, inv.invoice_number",1,"- Several recent orders (e.g., ORD-1010, ORD-1009) have no associated shipments or invoices yet, indicating they may still be in early processing stages.  
+- Orders with a ""FULFILLED"" status consistently show delivered shipments and paid invoices, reflecting successful completion and payment collection.  
+- Some orders with confirmed status have shipments in transit but invoices that are overdue or just issued, suggesting potential cash flow delays.  
+- A few closed or cancelled orders have shipments and invoices marked as cancelled, void, or returned, highlighting order disruptions or cancellations impacting fulfillment and billing.",ORD-1010,,2026-04-10 00:00:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CONFIRMED,,,,,,,,,,,,,,,
+Show orders with their shipment and invoice status,ok,,,2,,ORD-1009,,2026-04-05 00:00:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,DRAFT,,,,,,,,,,,,,,,
+Show orders with their shipment and invoice status,ok,,,3,,ORD-1008,,2026-03-10 00:00:00,,,INV-1008,,,,,SHP-1008,,,,,,,,,,,,,,,,,,,,,,,,,,VOID,CANCELLED,CLOSED,,,,,,,,,,,,,,,
+Show orders with their shipment and invoice status,ok,,,4,,ORD-1007,,2026-03-01 00:00:00,,,INV-1007,,,,,SHP-1007,,,,,,,,,,,,,,,,,,,,,,,,,,CANCELLED,RETURNED,CANCELLED,,,,,,,,,,,,,,,
+Show orders with their shipment and invoice status,ok,,,5,,ORD-1006,,2026-02-20 00:00:00,,,INV-1006,,,,,SHP-1006,,,,,,,,,,,,,,,,,,,,,,,,,,ISSUED,DELIVERED,FULFILLED,,,,,,,,,,,,,,,
+Show orders with their shipment and invoice status,ok,,,6,,ORD-1005,,2026-02-11 00:00:00,,,INV-1005,,,,,SHP-1005,,,,,,,,,,,,,,,,,,,,,,,,,,OVERDUE,IN_TRANSIT,CONFIRMED,,,,,,,,,,,,,,,
+Show orders with their shipment and invoice status,ok,,,7,,ORD-1004,,2026-02-03 00:00:00,,,INV-1004,,,,,SHP-1004,,,,,,,,,,,,,,,,,,,,,,,,,,ISSUED,IN_TRANSIT,CONFIRMED,,,,,,,,,,,,,,,
+Show orders with their shipment and invoice status,ok,,,8,,ORD-1003,,2026-01-22 00:00:00,,,INV-1003,,,,,SHP-1003,,,,,,,,,,,,,,,,,,,,,,,,,,PAID,DELIVERED,FULFILLED,,,,,,,,,,,,,,,
+Show orders with their shipment and invoice status,ok,,,9,,ORD-1002,,2026-01-15 00:00:00,,,INV-1002,,,,,SHP-1002,,,,,,,,,,,,,,,,,,,,,,,,,,PAID,DELIVERED,FULFILLED,,,,,,,,,,,,,,,
+Show orders with their shipment and invoice status,ok,,,10,,ORD-1001,,2026-01-10 00:00:00,,,INV-1001,,,,,SHP-1001,,,,,,,,,,,,,,,,,,,,,,,,,,PAID,DELIVERED,FULFILLED,,,,,,,,,,,,,,,
+Show customers with their most recent order and payment status,ok,,"select
+    ca.customer_account_number,
+    ca.customer_name,
+    oh.order_number as most_recent_order_number,
+    oh.order_date as most_recent_order_date,
+    oh.status_code as order_status,
+    pay.status_code as payment_status,
+    pay.payment_method,
+    pay.payment_date,
+    pay.payment_amount
+from v_customer_account ca
+left join (
+    select order_number, order_date, status_code, customer_account_id, order_id
+    from (
+        select
+            order_number,
+            order_date,
+            status_code,
+            customer_account_id,
+            order_id,
+            row_number() over (partition by customer_account_id order by order_date desc) as rn
+        from v_order_header
+    )
+    where rn = 1
+) oh on ca.customer_account_id = oh.customer_account_id
+left join v_invoice_header inv on oh.order_id = inv.order_id
+left join (
+    select invoice_id, status_code, payment_method, payment_date, payment_amount
+    from (
+        select
+            invoice_id,
+            status_code,
+            payment_method,
+            payment_date,
+            payment_amount,
+            row_number() over (partition by invoice_id order by payment_date desc nulls last) as rn
+        from v_payment_transaction
+    )
+    where rn = 1
+) pay on inv.invoice_id = pay.invoice_id
+order by ca.customer_name, oh.order_date desc nulls last",1,"- Several customers have recent orders without completed payments, indicating potential delays or issues in payment processing, especially for orders in DRAFT, CONFIRMED, or CANCELLED status.  
+- Only a few customers, such as Acme West Division and Northwind Freight, show completed or failed payments, suggesting varied payment success across accounts.  
+- Legacy Enterprise has no recent orders, which may signal inactivity or lost business opportunities.  
+- Summit Primary Care has a recent order with a pending payment, highlighting a possible area to follow up for payment completion.",,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST1001,Acme East Division,,,,,,,,,,DRAFT,ORD-1009,2026-04-05 00:00:00,,,,,,,,,,,,,
+Show customers with their most recent order and payment status,ok,,,2,,,,,,,,,,,,,,,,,,,,,,,,,,2026-02-05 00:00:00,WIRE,718.0,CUST1002,Acme West Division,,,,,,,COMPLETED,,,FULFILLED,ORD-1002,2026-01-15 00:00:00,,,,,,,,,,,,,
+Show customers with their most recent order and payment status,ok,,,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST2002,Blue Horizon Online,,,,,,,,,,CONFIRMED,ORD-1004,2026-02-03 00:00:00,,,,,,,,,,,,,
+Show customers with their most recent order and payment status,ok,,,4,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST2001,Blue Horizon Stores,,,,,,,,,,CONFIRMED,ORD-1010,2026-04-10 00:00:00,,,,,,,,,,,,,
+Show customers with their most recent order and payment status,ok,,,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST5002,Legacy Enterprise,,,,,,,,,,,,,,,,,,,,,,,,,
+Show customers with their most recent order and payment status,ok,,,6,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST5001,Legacy Public Sector,,,,,,,,,,CLOSED,ORD-1008,2026-03-10 00:00:00,,,,,,,,,,,,,
+Show customers with their most recent order and payment status,ok,,,7,,,,,,,,,,,,,,,,,,,,,,,,,,2026-02-25 00:00:00,ACH,399.0,CUST3001,Northwind Freight,,,,,,,FAILED,,,CONFIRMED,ORD-1005,2026-02-11 00:00:00,,,,,,,,,,,,,
+Show customers with their most recent order and payment status,ok,,,8,,,,,,,,,,,,,,,,,,,,,,,,,,2026-04-10 00:00:00,ACH,578.0,CUST4001,Summit Primary Care,,,,,,,PENDING,,,FULFILLED,ORD-1006,2026-02-20 00:00:00,,,,,,,,,,,,,
+Show customers with their most recent order and payment status,ok,,,9,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST4002,Summit Specialty Clinic,,,,,,,,,,CANCELLED,ORD-1007,2026-03-01 00:00:00,,,,,,,,,,,,,
+Show all orders for customers shipping to San Diego,ok,,"select
+    oh.ORDER_NUMBER,
+    oh.ORDER_DATE,
+    ca.CUSTOMER_ACCOUNT_NUMBER,
+    ca.CUSTOMER_NAME,
+    oh.STATUS_CODE as ORDER_STATUS,
+    oh.ORDER_TOTAL_AMOUNT,
+    sh.SHIPMENT_NUMBER,
+    sh.SHIPMENT_DATE,
+    sh.STATUS_CODE as SHIPMENT_STATUS,
+    addr.ADDRESS_LINE1,
+    addr.CITY,
+    addr.STATE_PROVINCE,
+    addr.POSTAL_CODE,
+    addr.COUNTRY_CODE
+from v_order_header oh
+join v_customer_account ca on oh.CUSTOMER_ACCOUNT_ID = ca.CUSTOMER_ACCOUNT_ID
+join v_shipment_header sh on oh.ORDER_ID = sh.ORDER_ID
+join v_address_master addr on sh.SHIP_TO_ADDRESS_ID = addr.ADDRESS_ID
+where addr.CITY = 'San Diego'
+order by oh.ORDER_DATE desc, oh.ORDER_NUMBER",1,"- Two orders were shipped to San Diego, both delivered to the same address on Harbor Boulevard.  
+- One order was successfully fulfilled and delivered, generating a significant revenue of $1,718.  
+- The other order was cancelled and the shipment was returned, indicating a potential issue with that customer or order.  
+- The customer with the fulfilled order, Acme West Division, appears to be a key contributor to sales in this region.",ORD-1007,,2026-03-01 00:00:00,,79.0,,,,,,SHP-1007,2026-03-03 00:00:00,,,,,,,,,,,,,,,,CUST4002,Summit Specialty Clinic,,,,,,,,,RETURNED,CANCELLED,,,15 Harbor Boulevard,San Diego,CA,92101,US,,,,,,,,
+Show all orders for customers shipping to San Diego,ok,,,2,,ORD-1002,,2026-01-15 00:00:00,,1718.0,,,,,,SHP-1002,2026-01-18 00:00:00,,,,,,,,,,,,,,,,CUST1002,Acme West Division,,,,,,,,,DELIVERED,FULFILLED,,,15 Harbor Boulevard,San Diego,CA,92101,US,,,,,,,,
+Show total revenue by customer,ok,,"select
+    CUSTOMER_ACCOUNT_NUMBER,
+    CUSTOMER_NAME,
+    sum(TOTAL_ORDER_AMOUNT) as TOTAL_REVENUE
+from v_customer_order_summary
+group by CUSTOMER_ACCOUNT_NUMBER, CUSTOMER_NAME
+order by TOTAL_REVENUE desc, CUSTOMER_NAME",1,"- Acme East Division leads revenue generation significantly, contributing more than double the revenue of the next highest customer.  
+- Legacy Public Sector and Acme West Division are also key contributors, each generating substantial revenue but notably less than Acme East Division.  
+- Several customers, including Legacy Enterprise, show minimal to no revenue, indicating potential areas for sales growth or account review.  
+- Blue Horizon and Summit customers represent mid-tier revenue segments, suggesting steady but moderate business engagement.",,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST1001,Acme East Division,,,,,,,,,,,,,,,,,,4046,,,,,,,
+Show total revenue by customer,ok,,,2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST5001,Legacy Public Sector,,,,,,,,,,,,,,,,,,1799,,,,,,,
+Show total revenue by customer,ok,,,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST1002,Acme West Division,,,,,,,,,,,,,,,,,,1718,,,,,,,
+Show total revenue by customer,ok,,,4,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST4001,Summit Primary Care,,,,,,,,,,,,,,,,,,1578,,,,,,,
+Show total revenue by customer,ok,,,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST2001,Blue Horizon Stores,,,,,,,,,,,,,,,,,,1446,,,,,,,
+Show total revenue by customer,ok,,,6,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST3001,Northwind Freight,,,,,,,,,,,,,,,,,,399,,,,,,,
+Show total revenue by customer,ok,,,7,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST2002,Blue Horizon Online,,,,,,,,,,,,,,,,,,219,,,,,,,
+Show total revenue by customer,ok,,,8,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST4002,Summit Specialty Clinic,,,,,,,,,,,,,,,,,,79,,,,,,,
+Show total revenue by customer,ok,,,9,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST5002,Legacy Enterprise,,,,,,,,,,,,,,,,,,0,,,,,,,
+Show top 5 customers by order amount,ok,,"select
+    CUSTOMER_ACCOUNT_NUMBER,
+    CUSTOMER_NAME,
+    CUSTOMER_TYPE,
+    ORGANIZATION_NAME,
+    ORDER_COUNT,
+    TOTAL_ORDER_AMOUNT,
+    FIRST_ORDER_DATE,
+    MOST_RECENT_ORDER_DATE
+from v_customer_order_summary
+order by TOTAL_ORDER_AMOUNT desc, CUSTOMER_NAME
+fetch first 5 rows only",1,"- Acme Manufacturing dominates the top customer list with two divisions contributing the highest total order amounts, indicating strong business from this organization.  
+- The top customer, Acme East Division, has placed multiple orders totaling significantly more than others, showing high engagement and potential for further growth.  
+- Government and healthcare sectors also appear among the top customers, reflecting diverse industry demand.  
+- Blue Horizon Stores, a retail customer, maintains steady order activity with multiple purchases, suggesting consistent business despite lower total spend compared to top B2B clients.",,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST1001,Acme East Division,Acme Manufacturing,,,,,,,,,,,2026-04-05 00:00:00,,,,,,,B2B,2,4046,2026-01-10 00:00:00,,,
+Show top 5 customers by order amount,ok,,,2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST5001,Legacy Public Sector,Legacy Services,,,,,,,,,,,2026-03-10 00:00:00,,,,,,,GOVERNMENT,1,1799,2026-03-10 00:00:00,,,
+Show top 5 customers by order amount,ok,,,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST1002,Acme West Division,Acme Manufacturing,,,,,,,,,,,2026-01-15 00:00:00,,,,,,,B2B,1,1718,2026-01-15 00:00:00,,,
+Show top 5 customers by order amount,ok,,,4,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST4001,Summit Primary Care,Summit Health Group,,,,,,,,,,,2026-02-20 00:00:00,,,,,,,HEALTHCARE,1,1578,2026-02-20 00:00:00,,,
+Show top 5 customers by order amount,ok,,,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST2001,Blue Horizon Stores,Blue Horizon Retail,,,,,,,,,,,2026-04-10 00:00:00,,,,,,,RETAIL,2,1446,2026-01-22 00:00:00,,,
+Show total paid vs outstanding invoices by customer,ok,,"select
+    ca.customer_account_number,
+    ca.customer_name,
+    sum(case when inv.status_code = 'PAID' then inv.invoice_total_amount else 0 end) as total_paid_amount,
+    sum(case when inv.status_code in ('ISSUED', 'OVERDUE') then inv.invoice_total_amount else 0 end) as total_outstanding_amount
+from v_customer_account ca
+left join v_invoice_header inv on ca.customer_account_id = inv.customer_account_id
+group by ca.customer_account_number, ca.customer_name
+order by ca.customer_name",1,"- Acme East and West Divisions lead in paid invoices, showing strong payment performance with no outstanding balances.  
+- Blue Horizon Online, Northwind Freight, and Summit Primary Care have notable outstanding invoice amounts, indicating potential collection focus areas.  
+- Several customers, including Legacy Enterprise and Legacy Public Sector, currently have no recorded paid or outstanding invoices, which may warrant review.  
+- Overall, there is a clear split between customers who have fully paid invoices and those with outstanding amounts, suggesting varied payment behaviors across the customer base.",,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST1001,Acme East Division,,,,,,,,,,,,,,,,,,,,,,,1648,0,
+Show total paid vs outstanding invoices by customer,ok,,,2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST1002,Acme West Division,,,,,,,,,,,,,,,,,,,,,,,1718,0,
+Show total paid vs outstanding invoices by customer,ok,,,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST2002,Blue Horizon Online,,,,,,,,,,,,,,,,,,,,,,,0,219,
+Show total paid vs outstanding invoices by customer,ok,,,4,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST2001,Blue Horizon Stores,,,,,,,,,,,,,,,,,,,,,,,648,0,
+Show total paid vs outstanding invoices by customer,ok,,,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST5002,Legacy Enterprise,,,,,,,,,,,,,,,,,,,,,,,0,0,
+Show total paid vs outstanding invoices by customer,ok,,,6,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST5001,Legacy Public Sector,,,,,,,,,,,,,,,,,,,,,,,0,0,
+Show total paid vs outstanding invoices by customer,ok,,,7,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST3001,Northwind Freight,,,,,,,,,,,,,,,,,,,,,,,0,399,
+Show total paid vs outstanding invoices by customer,ok,,,8,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST4001,Summit Primary Care,,,,,,,,,,,,,,,,,,,,,,,0,1578,
+Show total paid vs outstanding invoices by customer,ok,,,9,,,,,,,,,,,,,,,,,,,,,,,,,,,,,CUST4002,Summit Specialty Clinic,,,,,,,,,,,,,,,,,,,,,,,0,0,
+Show inventory value by location,ok,,"select
+    location_code,
+    sum(quantity_on_hand * unit_price) as inventory_value
+from v_inventory_status
+group by location_code
+order by location_code",1,"- The CLT-DC location holds the highest inventory value, significantly surpassing other locations.  
+- RDU-DC has a considerably lower inventory value, indicating either smaller stock levels or lower-priced items.  
+- The disparity suggests CLT-DC may be a primary distribution center or serves a larger market demand.  
+- Monitoring inventory allocation between these locations could optimize stock management and reduce holding costs.",,,,,,,,,,,,,,,,,CLT-DC,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,44146
+Show inventory value by location,ok,,,2,,,,,,,,,,,,,,,,,,RDU-DC,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,13737
+Show pending payments,ok,,"select
+    PAYMENT_REFERENCE,
+    INVOICE_ID,
+    PAYMENT_DATE,
+    PAYMENT_METHOD,
+    PAYMENT_AMOUNT,
+    STATUS_CODE
+from v_payment_transaction
+where STATUS_CODE = 'PENDING'
+order by PAYMENT_DATE desc, PAYMENT_REFERENCE",1,"- There is currently one pending payment, indicating a low backlog in payment processing.  
+- The pending payment is relatively recent, dated in April 2026, suggesting timely follow-up may be needed.  
+- The payment method involved is ACH, which could be monitored for any delays or issues specific to this channel.  
+- The amount pending is moderate, so resolving this payment promptly can help maintain healthy cash flow.",,,,PENDING,,,,,,,,,,,,,,,,,,,PAY-1007,6,2026-04-10 00:00:00,ACH,578.0,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show returned shipments,ok,,"select
+    SHIPMENT_NUMBER,
+    ORDER_ID,
+    SHIPMENT_DATE,
+    STATUS_CODE,
+    SHIPMENT_TOTAL_AMOUNT
+from v_shipment_header
+where STATUS_CODE = 'RETURNED'
+order by SHIPMENT_DATE desc, SHIPMENT_NUMBER",1,"- There is a single returned shipment recorded, indicating a low return rate for the period analyzed.  
+- The returned shipment occurred recently, suggesting a potential isolated issue with that specific order.  
+- The shipment value of $79 is moderate, which may warrant a review of product quality or customer satisfaction for mid-range orders.  
+- No patterns of frequent returns or high-value shipment returns are evident from the current data.",,,,RETURNED,,,7,,,,SHP-1007,2026-03-03 00:00:00,79.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show void invoices,ok,,"select
+    invoice_number,
+    customer_account_id,
+    order_id,
+    invoice_date,
+    due_date,
+    status_code,
+    invoice_total_amount
+from v_invoice_header
+where status_code = 'VOID'
+order by invoice_date desc, invoice_number",1,"- There is only one voided invoice recorded, indicating void transactions are rare or well-controlled.  
+- The voided invoice is relatively recent, dated March 2026, suggesting recent activity or adjustments.  
+- The invoice amount of $1,799 is significant, which may warrant review to understand the reason for voiding such a high-value transaction.  
+- The customer associated with the voided invoice could be a key account to monitor for potential billing or order issues.",,8,,VOID,,INV-1008,8,2026-03-13 00:00:00,2026-04-12 00:00:00,1799.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Show customers with suspended accounts,ok,,"select
+    CUSTOMER_ACCOUNT_NUMBER,
+    CUSTOMER_NAME,
+    CUSTOMER_TYPE,
+    STATUS_CODE
+from v_customer_account
+where STATUS_CODE = 'SUSPENDED'
+order by CUSTOMER_NAME",1,"- Only one customer account is currently suspended, indicating a low suspension rate.  
+- The suspended account belongs to a healthcare provider, which may warrant further review given the sector's critical nature.  
+- No other customer types appear to have suspended accounts, suggesting potential sector-specific issues or isolated cases.  
+- Overall, account suspensions seem minimal, reflecting generally good account status management.",,,,SUSPENDED,,,,,,,,,,,,,,,,,,,,,,,,CUST4002,Summit Specialty Clinic,,,,,,,,,,,,,,,,,,,HEALTHCARE,,,,,,
