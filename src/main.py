@@ -1,4 +1,5 @@
 import argparse
+import csv
 import json
 from pathlib import Path
 from random import choice
@@ -72,6 +73,17 @@ def parse_args() -> argparse.Namespace:
         type=str,
         help="Manually supply an LLM question"
     )
+    parser.add_argument(
+        "-f", "--file",
+        type=str,
+        help="Path to a text file containing one test question per line"
+    )
+    parser.add_argument(
+        "-o", "--output",
+        type=str,
+        default="test_case_results.csv",
+        help="Output CSV file path (default: test_case_results.csv)"
+    )
     return parser.parse_args()
 
 
@@ -100,15 +112,118 @@ def resolve_user_question(config: dict) -> str:
     return choice(sample_questions[question_type])
 
 
+def load_questions_from_file(filepath: str) -> list[str]:
+    """
+    Read test questions from a text file.
+    One question per line. Blank lines and lines starting with # are skipped.
+    """
+    questions = []
+    path = Path(filepath)
+
+    if not path.exists():
+        print(f"Error: file not found: {filepath}")
+        return []
+
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#"):
+                questions.append(line)
+
+    return questions
+
+
+def write_results_to_csv(all_results: list[PipelineResult], output_path: str) -> None:
+    """
+    Write all pipeline results to a CSV file.
+
+    Structure:
+    - One row per result row per question.
+    - If a question returns 5 data rows, that produces 5 CSV rows.
+    - Metadata columns: question, status, error_message, sql, row_number, explanation
+    - Data columns: all columns from the result rows (union across all questions)
+    - explanation only written on the first data row per question, blank on subsequent rows
+    - If a question has no data rows, one CSV row is written with the metadata and blank data columns
+    """
+    # Collect all unique data column names across all results, preserving order
+    all_data_columns = []
+    seen_columns = set()
+    for r in all_results:
+        for row in r.results:
+            for col in row.keys():
+                if col not in seen_columns:
+                    all_data_columns.append(col)
+                    seen_columns.add(col)
+
+    # Fixed metadata columns that appear first
+    meta_columns = ["question", "status", "error_message", "sql", "row_number", "explanation"]
+    fieldnames = meta_columns + all_data_columns
+
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+
+        for result in all_results:
+            if result.results:
+                for i, data_row in enumerate(result.results):
+                    csv_row = {
+                        "question":      result.question,
+                        "status":        result.status.value,
+                        "error_message": result.message if result.status != Status.OK else "",
+                        "sql":           result.sql if i == 0 else "",
+                        "row_number":    i + 1,
+                        "explanation":   result.explanation if i == 0 else "",
+                    }
+                    # Merge in the actual data columns
+                    csv_row.update(data_row)
+                    writer.writerow(csv_row)
+            else:
+                # No data rows — write one row with just metadata
+                csv_row = {
+                    "question":      result.question,
+                    "status":        result.status.value,
+                    "error_message": result.message,
+                    "sql":           result.sql,
+                    "row_number":    0,
+                    "explanation":   result.explanation,
+                }
+                writer.writerow(csv_row)
+
+
 def main() -> None:
     try:
         args = parse_args()
         config = load_config()
         final_config = merge_config(args, config)
 
-        if final_config["test_mode"]:
+        if final_config.get("test_mode"):
             print("(Running in TEST mode)")
 
+        # --- Batch file mode ---
+        if args.file:
+            questions = load_questions_from_file(args.file)
+            if not questions:
+                print("No questions found in file. Exiting.")
+                return
+
+            print(f"Loaded {len(questions)} questions from {args.file}")
+            print(f"Output will be written to: {args.output}\n")
+
+            # Load semantic schema once for the whole batch
+            semantic_schema = get_semantic_schema()
+
+            all_results = []
+            for i, question in enumerate(questions, 1):
+                print(f"[{i}/{len(questions)}] {question}")
+                result = run_pipeline(question, semantic_schema)
+                all_results.append(result)
+                print(f"  -> {result.status.value} | {len(result.results)} rows")
+
+            write_results_to_csv(all_results, args.output)
+            print(f"\nDone. Results written to {args.output}")
+            return
+
+        # --- Single question mode ---
         user_question = resolve_user_question(final_config)
         if not user_question:
             result = PipelineResult(
@@ -119,18 +234,20 @@ def main() -> None:
             result.print_pipeline_result()
             return
 
-        pipeline_result = run_pipeline(user_question)
+        semantic_schema = get_semantic_schema()
+        pipeline_result = run_pipeline(user_question, semantic_schema)
         pipeline_result.print_pipeline_result()
 
     except Exception as exc:
         print(f"\nX Application Error: {exc}")
 
 
-def run_pipeline(user_question: str) -> PipelineResult:
+def run_pipeline(user_question: str, semantic_schema: dict = None) -> PipelineResult:
     """Orchestrate the business flow."""
     result = PipelineResult(question=user_question)
 
-    semantic_schema = get_semantic_schema()
+    if semantic_schema is None:
+        semantic_schema = get_semantic_schema()
 
     result = generate_sql_from_question(result, semantic_schema)
     if result.status != Status.OK:

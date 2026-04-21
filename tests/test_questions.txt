@@ -1,0 +1,40 @@
+# -------------------------------------------------------
+# AI SQL Assistant — Test Cases
+# One question per line. Blank lines and # lines ignored.
+# -------------------------------------------------------
+
+# --- Single view, no joins ---
+Show all fulfilled orders
+Show overdue invoices
+Show delivered shipments
+Show discontinued products
+Show low stock items by location
+Show out of stock items
+Show failed payments
+List customers with no orders
+Show draft orders
+Show cancelled orders
+
+# --- Two-view joins ---
+Show all orders for customers in Charlotte
+List customers by organization
+Show invoices for Acme East Division
+Show payments for overdue invoices
+
+# --- Three or more views ---
+Show what has shipped but not been paid
+Show orders with their shipment and invoice status
+Show customers with their most recent order and payment status
+Show all orders for customers shipping to San Diego
+
+# --- Aggregations ---
+Show total revenue by customer
+Show top 5 customers by order amount
+Show total paid vs outstanding invoices by customer
+Show inventory value by location
+
+# --- Edge cases ---
+Show pending payments
+Show returned shipments
+Show void invoices
+Show customers with suspended accounts
