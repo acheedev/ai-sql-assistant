@@ -1,6 +1,4 @@
-DROP TABLE address_master CASCADE CONSTRAINTS;
-
-CREATE TABLE address_master (
+CREATE TABLE t_address_master (
     address_id     NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     address_line1  VARCHAR2(200),
     address_line2  VARCHAR2(200),

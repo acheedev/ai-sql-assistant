@@ -9,9 +9,10 @@ from enum import Enum
 from llm import ask_llm
 from prompt import build_sql_prompt
 from validator import is_safe_sql, normalize_sql
-from db import run_query
+from db import run_query, get_semantic_schema
 from explain import build_explanation_prompt
 import llm_exceptions as le
+
 
 class Status(Enum):
     OK = "ok"
@@ -129,7 +130,9 @@ def run_pipeline(user_question: str) -> PipelineResult:
     """Orchestrate the business flow."""
     result = PipelineResult(question=user_question)
 
-    result = generate_sql_from_question(result)
+    semantic_schema = get_semantic_schema()
+
+    result = generate_sql_from_question(result, semantic_schema)
     if result.status != Status.OK:
         return result
 
@@ -149,9 +152,12 @@ def run_pipeline(user_question: str) -> PipelineResult:
     return result
 
 
-def generate_sql_from_question(result: PipelineResult) -> PipelineResult:
+def generate_sql_from_question(
+    result: PipelineResult,
+    semantic_schema: dict
+) -> PipelineResult:
     """Populate result.sql from user question."""
-    prompt = build_sql_prompt(result.question)
+    prompt = build_sql_prompt(result.question, semantic_schema)
 
     try:
         sql = ask_llm(prompt)

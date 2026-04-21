@@ -237,3 +237,30 @@ INSERT INTO semantic_column (
            'Y',
            'Y',
            50 );
+
+INSERT INTO semantic_column (
+    object_name,
+    column_name,
+    business_name,
+    is_human_readable,
+    is_identifier,
+    is_default_select,
+    is_filterable,
+    display_rank
+) VALUES ( 'V_ORDER_DETAIL',
+           'ORDER_ID',
+           'Order ID',
+           'N',
+           'Y',
+           'N',
+           'Y',
+           5 );
+COMMIT;
+
+UPDATE semantic_column
+   SET
+    is_identifier = 'Y'
+ WHERE object_name = 'V_SHIPMENT_HEADER'
+   AND column_name IN ( 'ORDER_ID',
+                        'SHIP_TO_ADDRESS_ID' );
+COMMIT;

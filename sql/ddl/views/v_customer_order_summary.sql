@@ -8,7 +8,10 @@ CREATE OR REPLACE VIEW v_customer_order_summary AS
            org.organization_code,
            org.organization_name,
            COUNT(DISTINCT oh.order_id) AS order_count,
-           SUM(oh.order_total_amount) AS total_order_amount,
+           nvl(
+               sum(oh.order_total_amount),
+               0
+           ) AS total_order_amount,
            MIN(oh.order_date) AS first_order_date,
            MAX(oh.order_date) AS most_recent_order_date
       FROM customer_account ca
