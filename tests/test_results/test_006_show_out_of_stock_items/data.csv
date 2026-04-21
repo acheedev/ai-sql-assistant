@@ -1,0 +1,2 @@
+location_code,sku_code,sku_name,product_name,product_category,quantity_on_hand,reorder_threshold,inventory_health
+RDU-DC,MONITOR-27-QHD,Desktop Monitor 27 QHD,Desktop Monitor,HARDWARE,0,5,OUT_OF_STOCK

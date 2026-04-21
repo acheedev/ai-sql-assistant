@@ -1,0 +1,10 @@
+customer_account_number,customer_name,total_paid_amount,total_outstanding_amount
+CUST1001,Acme East Division,1648,0
+CUST1002,Acme West Division,1718,0
+CUST2002,Blue Horizon Online,0,219
+CUST2001,Blue Horizon Stores,648,0
+CUST5002,Legacy Enterprise,0,0
+CUST5001,Legacy Public Sector,0,0
+CUST3001,Northwind Freight,0,399
+CUST4001,Summit Primary Care,0,1578
+CUST4002,Summit Specialty Clinic,0,0

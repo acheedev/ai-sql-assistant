@@ -1,0 +1,5 @@
+order_number,customer_account_id,order_date,status_code,order_total_amount,order_id
+ORD-1006,6,2026-02-20 00:00:00,FULFILLED,1578.0,6
+ORD-1003,3,2026-01-22 00:00:00,FULFILLED,648.0,3
+ORD-1002,2,2026-01-15 00:00:00,FULFILLED,1718.0,2
+ORD-1001,1,2026-01-10 00:00:00,FULFILLED,1648.0,1

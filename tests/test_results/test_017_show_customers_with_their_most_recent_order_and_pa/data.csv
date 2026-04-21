@@ -1,0 +1,10 @@
+customer_account_number,customer_name,most_recent_order_number,most_recent_order_date,order_status,payment_status,payment_method,payment_date,payment_amount
+CUST1001,Acme East Division,ORD-1009,2026-04-05 00:00:00,DRAFT,,,,
+CUST1002,Acme West Division,ORD-1002,2026-01-15 00:00:00,FULFILLED,COMPLETED,WIRE,2026-02-05 00:00:00,718.0
+CUST2002,Blue Horizon Online,ORD-1004,2026-02-03 00:00:00,CONFIRMED,,,,
+CUST2001,Blue Horizon Stores,ORD-1010,2026-04-10 00:00:00,CONFIRMED,,,,
+CUST5002,Legacy Enterprise,,,,,,,
+CUST5001,Legacy Public Sector,ORD-1008,2026-03-10 00:00:00,CLOSED,,,,
+CUST3001,Northwind Freight,ORD-1005,2026-02-11 00:00:00,CONFIRMED,FAILED,ACH,2026-02-25 00:00:00,399.0
+CUST4001,Summit Primary Care,ORD-1006,2026-02-20 00:00:00,FULFILLED,PENDING,ACH,2026-04-10 00:00:00,578.0
+CUST4002,Summit Specialty Clinic,ORD-1007,2026-03-01 00:00:00,CANCELLED,,,,

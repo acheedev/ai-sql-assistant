@@ -1,0 +1,10 @@
+customer_account_number,customer_name,total_revenue
+CUST1001,Acme East Division,4046
+CUST5001,Legacy Public Sector,1799
+CUST1002,Acme West Division,1718
+CUST4001,Summit Primary Care,1578
+CUST2001,Blue Horizon Stores,1446
+CUST3001,Northwind Freight,399
+CUST2002,Blue Horizon Online,219
+CUST4002,Summit Specialty Clinic,79
+CUST5002,Legacy Enterprise,0

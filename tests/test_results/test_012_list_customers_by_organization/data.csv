@@ -1,0 +1,10 @@
+organization_id,customer_account_number,customer_name
+1,CUST1001,Acme East Division
+1,CUST1002,Acme West Division
+2,CUST2002,Blue Horizon Online
+2,CUST2001,Blue Horizon Stores
+3,CUST3001,Northwind Freight
+4,CUST4001,Summit Primary Care
+4,CUST4002,Summit Specialty Clinic
+5,CUST5002,Legacy Enterprise
+5,CUST5001,Legacy Public Sector

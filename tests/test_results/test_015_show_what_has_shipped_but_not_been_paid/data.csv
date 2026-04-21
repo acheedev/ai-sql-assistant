@@ -1,0 +1,4 @@
+shipment_number,order_id,shipment_date,shipment_status,invoice_number,invoice_status,invoice_total_amount,payment_reference,payment_status,payment_amount
+SHP-1006,6,2026-02-23 00:00:00,DELIVERED,INV-1006,ISSUED,1578.0,PAY-1007,PENDING,578.0
+SHP-1005,5,2026-02-13 00:00:00,IN_TRANSIT,INV-1005,OVERDUE,399.0,PAY-1005,FAILED,399.0
+SHP-1004,4,2026-02-05 00:00:00,IN_TRANSIT,INV-1004,ISSUED,219.0,,,

@@ -1,0 +1,2 @@
+payment_reference,invoice_id,payment_date,payment_method,payment_amount,status_code
+PAY-1007,6,2026-04-10 00:00:00,ACH,578.0,PENDING

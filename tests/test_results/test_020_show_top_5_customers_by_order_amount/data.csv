@@ -1,0 +1,6 @@
+customer_account_number,customer_name,customer_type,organization_name,order_count,total_order_amount,first_order_date,most_recent_order_date
+CUST1001,Acme East Division,B2B,Acme Manufacturing,2,4046,2026-01-10 00:00:00,2026-04-05 00:00:00
+CUST5001,Legacy Public Sector,GOVERNMENT,Legacy Services,1,1799,2026-03-10 00:00:00,2026-03-10 00:00:00
+CUST1002,Acme West Division,B2B,Acme Manufacturing,1,1718,2026-01-15 00:00:00,2026-01-15 00:00:00
+CUST4001,Summit Primary Care,HEALTHCARE,Summit Health Group,1,1578,2026-02-20 00:00:00,2026-02-20 00:00:00
+CUST2001,Blue Horizon Stores,RETAIL,Blue Horizon Retail,2,1446,2026-01-22 00:00:00,2026-04-10 00:00:00

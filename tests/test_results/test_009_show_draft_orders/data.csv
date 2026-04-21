@@ -1,0 +1,2 @@
+order_number,customer_account_id,order_date,status_code,order_total_amount
+ORD-1009,1,2026-04-05 00:00:00,DRAFT,2398.0

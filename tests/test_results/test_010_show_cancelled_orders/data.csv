@@ -1,0 +1,2 @@
+order_number,customer_account_id,order_date,status_code,order_total_amount
+ORD-1007,7,2026-03-01 00:00:00,CANCELLED,79.0

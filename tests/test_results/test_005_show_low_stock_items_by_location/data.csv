@@ -1,0 +1,6 @@
+location_code,sku_code,sku_name,product_name,quantity_on_hand,reorder_threshold,inventory_health
+CLT-DC,DESKTOP-I7-32GB,Desktop Workstation i7 32GB,Desktop Workstation,2,3,LOW_STOCK
+CLT-DC,MONITOR-27-QHD,Desktop Monitor 27 QHD,Desktop Monitor,3,5,LOW_STOCK
+CLT-DC,KEYBOARD-WL-WHT,Wireless Keyboard White,Wireless Keyboard,4,8,LOW_STOCK
+RDU-DC,MONITOR-27-QHD,Desktop Monitor 27 QHD,Desktop Monitor,0,5,OUT_OF_STOCK
+RDU-DC,DOCK-USB-C-90W,USB-C Dock 90W,USB-C Docking Station,2,6,LOW_STOCK

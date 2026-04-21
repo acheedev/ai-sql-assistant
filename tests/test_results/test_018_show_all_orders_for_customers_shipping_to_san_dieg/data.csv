@@ -1,0 +1,3 @@
+order_number,order_date,order_status,order_total_amount,customer_account_number,customer_name,customer_type,address_line1,city,state_province,postal_code,country_code
+ORD-1007,2026-03-01 00:00:00,CANCELLED,79.0,CUST4002,Summit Specialty Clinic,HEALTHCARE,15 Harbor Boulevard,San Diego,CA,92101,US
+ORD-1002,2026-01-15 00:00:00,FULFILLED,1718.0,CUST1002,Acme West Division,B2B,15 Harbor Boulevard,San Diego,CA,92101,US
