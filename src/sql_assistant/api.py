@@ -2,42 +2,27 @@ import asyncio
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Response as FastAPIResponse
 from fastapi.responses import JSONResponse
 from openai import OpenAI
-from pydantic import BaseModel
 
 from config.settings import settings
 from .db import run_query
 from .logging_utils import configure_logging
-from .pipeline import Status, run
+from .models import QueryRequest, QueryResponse, Status
+from .pipeline import run
 
 logger = logging.getLogger(__name__)
 
 _STATUS_TO_HTTP: dict[Status, int] = {
-    Status.OK: 200,
-    Status.QUESTION_ERROR: 422,
-    Status.UNSAFE_SQL: 422,
-    Status.CANCELLED: 422,
-    Status.DB_ERROR: 502,
-    Status.LLM_ERROR: 502,
+    Status.OK:                200,
+    Status.QUESTION_ERROR:    422,
+    Status.CANCELLED:         422,
+    Status.UNSAFE_SQL:        422,
+    Status.DB_ERROR:          502,
+    Status.LLM_ERROR:         502,
     Status.EXPLANATION_ERROR: 502,
 }
-
-
-class QueryRequest(BaseModel):
-    question: str
-
-
-class QueryResponse(BaseModel):
-    request_id: str
-    status: str
-    sql: str | None = None
-    is_safe: bool | None = None
-    row_count: int | None = None
-    explanation: str | None = None
-    message: str | None = None
-    results: list[dict] | None = None
 
 
 @asynccontextmanager
@@ -56,26 +41,14 @@ app = FastAPI(
 
 
 @app.post("/query", response_model=QueryResponse)
-async def query(request: QueryRequest, include_results: bool = False) -> JSONResponse:
+async def query(
+    request: QueryRequest,
+    include_results: bool = False,
+    response: FastAPIResponse = None,
+) -> QueryResponse:
     result = await asyncio.to_thread(run, request.question)
-
-    response = QueryResponse(
-        request_id=result.request_id,
-        status=result.status.value,
-    )
-
-    if result.status == Status.OK:
-        response.sql = result.sql
-        response.is_safe = result.is_safe
-        response.row_count = len(result.results)
-        response.explanation = result.explanation
-        if include_results:
-            response.results = result.results
-    else:
-        response.message = result.message
-
-    http_code = _STATUS_TO_HTTP.get(result.status, 500)
-    return JSONResponse(content=response.model_dump(mode="json"), status_code=http_code)
+    response.status_code = _STATUS_TO_HTTP[result.status]
+    return result.to_response(include_results=include_results)
 
 
 @app.get("/health")

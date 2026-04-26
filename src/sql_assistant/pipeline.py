@@ -2,9 +2,9 @@ import logging
 import time
 import uuid
 from dataclasses import dataclass, field
-from enum import Enum
 from typing import Any
 
+from .models import Status
 from .llm import generate_sql
 from .prompt import build_sql_prompt
 from .validator import is_safe_sql, normalize_sql
@@ -13,16 +13,6 @@ from .explain import generate_explanation
 from . import exceptions as le
 
 logger = logging.getLogger(__name__)
-
-
-class Status(Enum):
-    OK = "ok"
-    DB_ERROR = "db_error"
-    QUESTION_ERROR = "question_error"
-    LLM_ERROR = "llm_error"
-    CANCELLED = "cancelled"
-    UNSAFE_SQL = "unsafe_sql"
-    EXPLANATION_ERROR = "explanation_error"
 
 
 @dataclass
@@ -35,6 +25,19 @@ class PipelineResult:
     results: list[Any] = field(default_factory=list)
     explanation: str = ""
     request_id: str = ""
+
+    def to_response(self, include_results: bool = False) -> "QueryResponse":
+        from sql_assistant.models import QueryResponse
+        return QueryResponse(
+            request_id=self.request_id,
+            status=self.status,
+            sql=self.sql or None,
+            is_safe=self.is_safe if self.status == Status.OK else None,
+            row_count=len(self.results) if self.results is not None else None,
+            explanation=self.explanation or None,
+            message=self.message or None,
+            results=self.results if include_results else None,
+        )
 
     def print_pipeline_result(self) -> None:
         print(
