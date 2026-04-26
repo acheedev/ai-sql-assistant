@@ -1,3 +1,8 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 def format_schema(semantic_schema: dict) -> str:
     """
     Convert semantic schema dict into a structured schema block
@@ -63,6 +68,12 @@ def format_examples(semantic_schema: dict) -> str:
 
 
 def build_sql_prompt(user_question: str, semantic_schema: dict) -> str:
+    few_shot_count = sum(
+        1 for obj in semantic_schema.values()
+        for ex in obj["example_questions"]
+        if ex["sql"]
+    )
+
     schema_block = format_schema(semantic_schema)
     examples_block = format_examples(semantic_schema)
 
@@ -74,7 +85,7 @@ def build_sql_prompt(user_question: str, semantic_schema: dict) -> str:
 ---
 """
 
-    return f"""
+    prompt = f"""
 You are a SQL generator for an Oracle database.
 
 Your task is to convert a natural language question into a single SQL query.
@@ -113,3 +124,7 @@ Schema:
 User question:
 {user_question}
 """.strip()
+
+    logger.info("prompt_built", extra={"event": "prompt_built", "few_shot_count": few_shot_count})
+    logger.debug("prompt_text", extra={"event": "prompt_text", "prompt": prompt})
+    return prompt
