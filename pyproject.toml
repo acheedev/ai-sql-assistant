@@ -10,6 +10,8 @@ dependencies = [
     "openai",
     "oracledb",
     "pydantic-settings",
+    "fastapi",
+    "uvicorn",
 ]
 
 [project.optional-dependencies]
@@ -20,6 +22,7 @@ dev = [
 
 [project.scripts]
 sql-assistant = "sql_assistant.main:main"
+sql-assistant-api = "sql_assistant.api:app"
 
 [tool.setuptools]
 packages = ["sql_assistant", "config"]
@@ -27,3 +30,7 @@ packages = ["sql_assistant", "config"]
 [tool.setuptools.package-dir]
 sql_assistant = "src/sql_assistant"
 config = "config"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"

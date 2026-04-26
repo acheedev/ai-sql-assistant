@@ -1,5 +1,6 @@
 import logging
 import time
+import uuid
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
@@ -33,6 +34,7 @@ class PipelineResult:
     message: str = ""
     results: list[Any] = field(default_factory=list)
     explanation: str = ""
+    request_id: str = ""
 
     def print_pipeline_result(self) -> None:
         print(
@@ -47,10 +49,19 @@ class PipelineResult:
 
 
 def run(question: str) -> PipelineResult:
+    request_id = str(uuid.uuid4())
     start = time.monotonic()
-    logger.info("pipeline_start", extra={"event": "pipeline_start", "question": question})
+    logger.info("pipeline_start", extra={"event": "pipeline_start", "question": question, "request_id": request_id})
 
-    result = _run_pipeline(question)
+    try:
+        result = _run_pipeline(question, request_id)
+    except Exception as exc:
+        result = PipelineResult(
+            question=question,
+            request_id=request_id,
+            status=Status.DB_ERROR,
+            message=f"Unhandled pipeline error: {exc}",
+        )
 
     total_ms = int((time.monotonic() - start) * 1000)
     if result.status == Status.OK:
@@ -58,6 +69,7 @@ def run(question: str) -> PipelineResult:
             "event": "pipeline_complete",
             "status": result.status.value,
             "total_latency_ms": total_ms,
+            "request_id": request_id,
         })
     else:
         logger.error("pipeline_complete", extra={
@@ -65,12 +77,13 @@ def run(question: str) -> PipelineResult:
             "status": result.status.value,
             "total_latency_ms": total_ms,
             "error": result.message,
+            "request_id": request_id,
         })
     return result
 
 
-def _run_pipeline(question: str) -> PipelineResult:
-    result = PipelineResult(question=question)
+def _run_pipeline(question: str, request_id: str) -> PipelineResult:
+    result = PipelineResult(question=question, request_id=request_id)
     semantic_schema = get_semantic_schema()
 
     result = _generate_sql(result, semantic_schema)
@@ -111,8 +124,8 @@ def _generate_sql(result: PipelineResult, semantic_schema: dict) -> PipelineResu
         return result
 
     if result.sql == "CANNOT_ANSWER":
-        logger.warning("cannot_answer", extra={"event": "cannot_answer", "question": result.question})
-        result.status = Status.CANCELLED
+        logger.warning("cannot_answer", extra={"event": "cannot_answer", "question": result.question, "request_id": result.request_id})
+        result.status = Status.QUESTION_ERROR
         result.message = "LLM indicated it could not answer."
         return result
 
