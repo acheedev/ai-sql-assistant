@@ -3,3 +3,7 @@ python-dotenv
 oracledb
 fastapi
 uvicorn
+streamlit
+requests
+pandas
+cachetools

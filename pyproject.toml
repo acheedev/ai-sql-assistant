@@ -12,6 +12,10 @@ dependencies = [
     "pydantic-settings",
     "fastapi",
     "uvicorn",
+    "streamlit",
+    "requests",
+    "pandas",
+    "cachetools",
 ]
 
 [project.optional-dependencies]
@@ -23,6 +27,7 @@ dev = [
 [project.scripts]
 sql-assistant = "sql_assistant.main:main"
 sql-assistant-api = "sql_assistant.api:app"
+sql-assistant-ui = "sql_assistant.app:main"
 
 [tool.setuptools]
 packages = ["sql_assistant", "config"]

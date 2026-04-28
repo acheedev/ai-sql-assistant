@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     db_dsn: str
     log_level: str = "INFO"
     log_file: str = "logs/pipeline.log"
+    cache_ttl_seconds: int = 300
+    cache_max_size: int = 128
 
     model_config = SettingsConfigDict(
         env_file=str(ROOT / ".env"),

@@ -1,6 +1,15 @@
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def clear_cache():
+    """Reset cache state before every test to prevent cross-test contamination."""
+    import sql_assistant.cache as cache_mod
+    cache_mod._cache = None  # force re-init next access (picks up any patched settings)
+    yield
+    cache_mod._cache = None
+
+
 @pytest.fixture
 def minimal_schema():
     """Minimal schema dict matching the structure returned by get_semantic_schema().

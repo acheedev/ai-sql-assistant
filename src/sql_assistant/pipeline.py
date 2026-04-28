@@ -1,3 +1,4 @@
+import dataclasses
 import logging
 import time
 import uuid
@@ -5,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from .models import Status
+from .cache import cache_get, cache_set
 from .llm import generate_sql
 from .prompt import build_sql_prompt
 from .validator import is_safe_sql, normalize_sql
@@ -13,6 +15,10 @@ from .explain import generate_explanation
 from . import exceptions as le
 
 logger = logging.getLogger(__name__)
+
+
+def _normalize_question(question: str) -> str:
+    return " ".join(question.lower().split())
 
 
 @dataclass
@@ -53,6 +59,14 @@ class PipelineResult:
 
 def run(question: str) -> PipelineResult:
     request_id = str(uuid.uuid4())
+
+    # Cache lookup
+    cache_key = _normalize_question(question)
+    cached = cache_get(cache_key)
+    if cached is not None:
+        logger.info("cache_hit", extra={"event": "cache_hit", "question": question, "request_id": request_id})
+        return dataclasses.replace(cached, request_id=request_id)
+
     start = time.monotonic()
     logger.info("pipeline_start", extra={"event": "pipeline_start", "question": question, "request_id": request_id})
 
@@ -74,6 +88,7 @@ def run(question: str) -> PipelineResult:
             "total_latency_ms": total_ms,
             "request_id": request_id,
         })
+        cache_set(cache_key, result)
     else:
         logger.error("pipeline_complete", extra={
             "event": "pipeline_complete",
