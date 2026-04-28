@@ -69,14 +69,6 @@ The model never sees the raw `t_` base-table DDL. It sees only metadata read fro
 | `t_semantic_object_alias` | Maps user language such as "orders", "customers", or "stock" to the right view. |
 | `t_semantic_example_question` | Stores few-shot question-to-SQL examples used to ground generation. |
 
-The Oracle schema includes 12 base tables, 15 views, and several denormalized AI-friendly views, including:
-
-- `v_order_detail`
-- `v_customer_order_summary`
-- `v_inventory_status`
-
-This is the central design choice of the project: the database owns the business semantics, and the prompt is assembled from that governed layer at runtime.
-
 ## Safety Model
 
 Generated SQL must pass `validator.py` before execution.
