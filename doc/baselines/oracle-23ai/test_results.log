@@ -1,0 +1,73 @@
+PS C:\claude\ai-sql-assistant> pytest
+================================================= test session starts =================================================
+platform win32 -- Python 3.13.7, pytest-9.0.3, pluggy-1.6.0 -- C:\Python313\python.exe
+cachedir: .pytest_cache
+rootdir: C:\claude\ai-sql-assistant
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.13.0, mock-3.15.1
+collected 60 items
+
+tests/test_cache.py::TestCacheDisabled::test_get_cache_returns_none PASSED                                       [  1%]
+tests/test_cache.py::TestCacheDisabled::test_cache_get_returns_none PASSED                                       [  3%]
+tests/test_cache.py::TestCacheDisabled::test_cache_set_is_noop PASSED                                            [  5%]
+tests/test_cache.py::TestCacheEnabled::test_set_then_get_returns_value PASSED                                    [  6%]
+tests/test_cache.py::TestCacheEnabled::test_get_missing_key_returns_none PASSED                                  [  8%]
+tests/test_cache.py::TestCacheEnabled::test_ttl_expiry PASSED                                                    [ 10%]
+tests/test_cache.py::TestCacheEnabled::test_cache_clear PASSED                                                   [ 11%]
+tests/test_cache.py::TestCacheEnabled::test_max_size_evicts_oldest PASSED                                        [ 13%]
+tests/test_cache.py::TestPipelineIntegration::test_first_call_is_cache_miss PASSED                               [ 15%]
+tests/test_cache.py::TestPipelineIntegration::test_second_call_is_cache_hit PASSED                               [ 16%]
+tests/test_cache.py::TestPipelineIntegration::test_normalization_hits_same_cache_entry PASSED                    [ 18%]
+tests/test_cache.py::TestPipelineIntegration::test_error_result_not_cached PASSED                                [ 20%]
+tests/test_cache.py::TestPipelineIntegration::test_cache_disabled_always_runs_pipeline PASSED                    [ 21%]
+tests/test_cache.py::TestThreadSafety::test_concurrent_access_no_exceptions PASSED                               [ 23%]
+tests/test_pipeline.py::TestStatusPaths::test_ok PASSED                                                          [ 25%]
+tests/test_pipeline.py::TestStatusPaths::test_question_error PASSED                                              [ 26%]
+tests/test_pipeline.py::TestStatusPaths::test_cancelled PASSED                                                   [ 28%]
+tests/test_pipeline.py::TestStatusPaths::test_unsafe_sql PASSED                                                  [ 30%]
+tests/test_pipeline.py::TestStatusPaths::test_db_error PASSED                                                    [ 31%]
+tests/test_pipeline.py::TestStatusPaths::test_llm_error PASSED                                                   [ 33%]
+tests/test_pipeline.py::TestStatusPaths::test_explanation_error PASSED                                           [ 35%]
+tests/test_pipeline.py::TestQuestionErrorVsCancelled::test_cannot_answer_is_question_error PASSED                [ 36%]
+tests/test_pipeline.py::TestQuestionErrorVsCancelled::test_empty_sql_is_cancelled PASSED                         [ 38%]
+tests/test_pipeline.py::TestQuestionErrorVsCancelled::test_question_error_and_cancelled_are_different PASSED     [ 40%]
+tests/test_pipeline.py::TestRequestId::test_unique_across_runs PASSED                                            [ 41%]
+tests/test_pipeline.py::TestS1Regression::test_schema_failure_returns_db_error PASSED                            [ 43%]
+tests/test_prompt.py::test_prompt_contains_question PASSED                                                       [ 45%]
+tests/test_prompt.py::test_prompt_marks_preferred_objects PASSED                                                 [ 46%]
+tests/test_prompt.py::test_prompt_marks_human_readable_columns PASSED                                            [ 48%]
+tests/test_prompt.py::test_prompt_marks_identifier_columns PASSED                                                [ 50%]
+tests/test_prompt.py::test_prompt_marks_filterable_columns PASSED                                                [ 51%]
+tests/test_prompt.py::test_prompt_includes_few_shot_examples PASSED                                              [ 53%]
+tests/test_prompt.py::test_prompt_instructs_cannot_answer PASSED                                                 [ 55%]
+tests/test_prompt.py::test_prompt_contains_oracle_fetch_syntax PASSED                                            [ 56%]
+tests/test_prompt.py::test_prompt_instructs_no_trailing_semicolon PASSED                                         [ 58%]
+tests/test_prompt.py::test_prompt_does_not_instruct_to_add_semicolon PASSED                                      [ 60%]
+tests/test_prompt.py::test_non_preferred_object_has_no_preferred_tag PASSED                                      [ 61%]
+tests/test_prompt.py::test_object_without_examples_omits_examples_section PASSED                                 [ 63%]
+tests/test_validator.py::test_safe_sql[SELECT * FROM v_order_detail] PASSED                                      [ 65%]
+tests/test_validator.py::test_safe_sql[WITH cte AS (SELECT 1 FROM DUAL) SELECT * FROM cte] PASSED                [ 66%]
+tests/test_validator.py::test_safe_sql[select id from v_inventory_status] PASSED                                 [ 68%]
+tests/test_validator.py::test_safe_sql[SELECT id -- get the id\nFROM v_orders] PASSED                            [ 70%]
+tests/test_validator.py::test_safe_sql[SELECT /* comment */ id FROM v_orders] PASSED                             [ 71%]
+tests/test_validator.py::test_unsafe_sql[INSERT INTO t_orders VALUES (1)] PASSED                                 [ 73%]
+tests/test_validator.py::test_unsafe_sql[DELETE FROM t_orders WHERE id = 1] PASSED                               [ 75%]
+tests/test_validator.py::test_unsafe_sql[UPDATE t_orders SET status = 'X'] PASSED                                [ 76%]
+tests/test_validator.py::test_unsafe_sql[DROP TABLE t_orders] PASSED                                             [ 78%]
+tests/test_validator.py::test_unsafe_sql[ALTER TABLE t_orders ADD COLUMN foo VARCHAR2(10)] PASSED                [ 80%]
+tests/test_validator.py::test_unsafe_sql[TRUNCATE TABLE t_orders] PASSED                                         [ 81%]
+tests/test_validator.py::test_unsafe_sql[CREATE TABLE foo (id NUMBER)] PASSED                                    [ 83%]
+tests/test_validator.py::test_unsafe_sql[GRANT SELECT ON t_orders TO user1] PASSED                               [ 85%]
+tests/test_validator.py::test_unsafe_sql[EXECUTE some_proc] PASSED                                               [ 86%]
+tests/test_validator.py::test_unsafe_sql[BEGIN NULL; END;] PASSED                                                [ 88%]
+tests/test_validator.py::test_unsafe_sql[SELECT 1; SELECT 2] PASSED                                              [ 90%]
+tests/test_validator.py::test_unsafe_sql[] PASSED                                                                [ 91%]
+tests/test_validator.py::test_normalize_strips_leading_trailing_whitespace PASSED                                [ 93%]
+tests/test_validator.py::test_normalize_strips_trailing_semicolon PASSED                                         [ 95%]
+tests/test_validator.py::test_normalize_preserves_internal_structure PASSED                                      [ 96%]
+tests/test_validator.py::test_normalize_strips_line_comments PASSED                                              [ 98%]
+tests/test_validator.py::test_normalize_strips_block_comments PASSED                                             [100%]
+
+================================================= 60 passed in 2.28s ==================================================
+PS C:\claude\ai-sql-assistant>

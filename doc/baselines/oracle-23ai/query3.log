@@ -1,0 +1,416 @@
+set pagesize 500
+set linesize 1000
+set trimspool on
+set feedback on
+set verify off
+set tab off
+
+prompt === SEMANTIC OBJECT COVERAGE SUMMARY ===
+
+select
+    o.object_name,
+    o.object_type,
+    o.business_name,
+    o.include_in_ai,
+    o.preferred_for_ai,
+    o.default_rank,
+    o.status,
+    (
+        select count(*)
+        from t_semantic_column c
+        where c.object_name = o.object_name
+    ) as semantic_column_count,
+    (
+        select count(*)
+        from user_tab_cols pc
+        where pc.table_name = o.object_name
+          and pc.hidden_column = 'NO'
+    ) as physical_column_count,
+    (
+        select count(*)
+        from t_semantic_object_alias a
+        where a.object_name = o.object_name
+    ) as alias_count,
+    (
+        select count(*)
+        from t_semantic_example_question q
+        where q.preferred_object_name = o.object_name
+    ) as example_count
+from t_semantic_object o
+order by
+    o.default_rank,
+    o.object_name;
+
+
+prompt === SEMANTIC OBJECTS MISSING OR TYPE-MISMATCHED IN ORACLE ===
+
+select
+    o.object_name,
+    o.object_type as semantic_object_type,
+    uo.object_type as physical_object_type,
+    o.status,
+    o.include_in_ai
+from t_semantic_object o
+left join user_objects uo
+    on uo.object_name = o.object_name
+   and uo.object_type in ('TABLE', 'VIEW')
+where uo.object_name is null
+   or upper(o.object_type) <> uo.object_type
+order by o.object_name;
+
+
+prompt === PHYSICAL VIEWS WITHOUT SEMANTIC REGISTRATION ===
+
+select
+    uv.view_name
+from user_views uv
+left join t_semantic_object o
+    on o.object_name = uv.view_name
+where o.object_name is null
+order by uv.view_name;
+
+
+prompt === SEMANTIC COLUMNS MISSING FROM PHYSICAL OBJECTS ===
+
+select
+    sc.object_name,
+    sc.column_name,
+    sc.business_name,
+    o.status,
+    o.include_in_ai
+from t_semantic_column sc
+join t_semantic_object o
+    on o.object_name = sc.object_name
+left join user_tab_cols pc
+    on pc.table_name = sc.object_name
+   and pc.column_name = sc.column_name
+   and pc.hidden_column = 'NO'
+where pc.column_name is null
+order by
+    sc.object_name,
+    sc.display_rank,
+    sc.column_name;
+
+
+prompt === PHYSICAL COLUMNS MISSING SEMANTIC METADATA ===
+
+select
+    o.object_name,
+    pc.column_id,
+    pc.column_name,
+    pc.data_type,
+    o.status,
+    o.include_in_ai
+from t_semantic_object o
+join user_tab_cols pc
+    on pc.table_name = o.object_name
+   and pc.hidden_column = 'NO'
+left join t_semantic_column sc
+    on sc.object_name = o.object_name
+   and sc.column_name = pc.column_name
+where sc.column_name is null
+order by
+    o.object_name,
+    pc.column_id;
+
+
+prompt === FOREIGN-KEY ORPHAN CHECKS ===
+
+select
+    'SEMANTIC_COLUMN -> SEMANTIC_OBJECT' as integrity_check,
+    count(*) as orphan_count
+from t_semantic_column c
+left join t_semantic_object o
+    on o.object_name = c.object_name
+where o.object_name is null
+
+union all
+
+select
+    'SEMANTIC_ALIAS -> SEMANTIC_OBJECT',
+    count(*)
+from t_semantic_object_alias a
+left join t_semantic_object o
+    on o.object_name = a.object_name
+where o.object_name is null
+
+union all
+
+select
+    'EXAMPLE_QUESTION -> SEMANTIC_OBJECT',
+    count(*)
+from t_semantic_example_question q
+left join t_semantic_object o
+    on o.object_name = q.preferred_object_name
+where o.object_name is null;
+
+
+prompt === OBJECT FLAG AND STATUS DISTRIBUTION ===
+
+select
+    status,
+    include_in_ai,
+    preferred_for_ai,
+    count(*) as object_count
+from t_semantic_object
+group by
+    status,
+    include_in_ai,
+    preferred_for_ai
+order by
+    status,
+    include_in_ai,
+    preferred_for_ai;
+
+
+prompt === LOGICALLY INCONSISTENT OBJECT FLAGS ===
+
+select
+    object_name,
+    status,
+    include_in_ai,
+    preferred_for_ai
+from t_semantic_object
+where (preferred_for_ai = 'Y' and include_in_ai <> 'Y')
+   or (include_in_ai = 'Y' and status <> 'ACTIVE')
+order by object_name;
+
+
+prompt === ENABLED EXAMPLES TARGETING DISABLED OBJECTS ===
+
+select
+    q.preferred_object_name,
+    count(*) as enabled_example_count,
+    o.status,
+    o.include_in_ai
+from t_semantic_example_question q
+join t_semantic_object o
+    on o.object_name = q.preferred_object_name
+where q.is_enabled = 'Y'
+  and (
+        o.status <> 'ACTIVE'
+        or o.include_in_ai <> 'Y'
+      )
+group by
+    q.preferred_object_name,
+    o.status,
+    o.include_in_ai
+order by q.preferred_object_name;
+
+
+prompt === EXAMPLE COVERAGE BY OBJECT ===
+
+select
+    o.object_name,
+    count(q.example_question_id) as total_examples,
+    sum(
+        case
+            when q.is_enabled = 'Y' then 1
+            else 0
+        end
+    ) as enabled_examples,
+    sum(
+        case
+            when q.exemplar_sql is not null then 1
+            else 0
+        end
+    ) as examples_with_sql,
+    sum(
+        case
+            when q.is_enabled = 'Y'
+             and q.exemplar_sql is null then 1
+            else 0
+        end
+    ) as enabled_without_sql
+from t_semantic_object o
+left join t_semantic_example_question q
+    on q.preferred_object_name = o.object_name
+group by o.object_name
+order by
+    total_examples desc,
+    o.object_name;
+
+
+prompt === NORMALIZED ALIAS COLLISIONS ===
+
+select
+    upper(trim(alias_term)) as normalized_alias,
+    count(*) as alias_rows,
+    count(distinct object_name) as object_count,
+    listagg(object_name, ', ')
+        within group (order by object_name) as registered_objects
+from t_semantic_object_alias
+group by upper(trim(alias_term))
+having count(*) > 1
+order by
+    object_count desc,
+    normalized_alias;
+
+
+prompt === DUPLICATE COLUMN DISPLAY RANKS ===
+
+select
+    object_name,
+    display_rank,
+    count(*) as columns_at_rank
+from t_semantic_column
+group by
+    object_name,
+    display_rank
+having count(*) > 1
+order by
+    object_name,
+    display_rank;
+
+
+prompt === SEMANTIC COLUMN FLAG DISTRIBUTION ===
+
+select
+    is_human_readable,
+    is_identifier,
+    is_default_select,
+    is_filterable,
+    count(*) as column_count
+from t_semantic_column
+group by
+    is_human_readable,
+    is_identifier,
+    is_default_select,
+    is_filterable
+order by
+    is_human_readable,
+    is_identifier,
+    is_default_select,
+    is_filterable;
+    
+    
+OUTPUT:
+
+=== SEMANTIC OBJECT COVERAGE SUMMARY ===
+
+OBJECT_NAME                                                                                                                      OBJECT_TYPE                    BUSINESS_NAME                                                                                                                                                                                            I P DEFAULT_RANK STATUS               SEMANTIC_COLUMN_COUNT PHYSICAL_COLUMN_COUNT ALIAS_COUNT EXAMPLE_COUNT
+-------------------------------------------------------------------------------------------------------------------------------- ------------------------------ -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- - - ------------ -------------------- --------------------- --------------------- ----------- -------------
+V_CUSTOMER_ACCOUNT                                                                                                               VIEW                           Customer Account                                                                                                                                                                                         Y Y           10 ACTIVE                                   8                     9           4             2
+V_ORDER_DETAIL                                                                                                                   VIEW                           Order Detail                                                                                                                                                                                             Y Y           12 ACTIVE                                  25                    25           4             1
+V_CUSTOMER_ORDER_SUMMARY                                                                                                         VIEW                           Customer Order Summary                                                                                                                                                                                   Y Y           14 ACTIVE                                  12                    12           4             2
+V_ORDER_HEADER                                                                                                                   VIEW                           Order                                                                                                                                                                                                    Y Y           15 ACTIVE                                   6                     7           5             3
+V_INVENTORY_STATUS                                                                                                               VIEW                           Inventory Status                                                                                                                                                                                         Y Y           16 ACTIVE                                  16                    16           4             1
+V_INVOICE_HEADER                                                                                                                 VIEW                           Invoice                                                                                                                                                                                                  Y Y           17 ACTIVE                                   8                     9           4             2
+V_ORDER_LINE_ITEM                                                                                                                VIEW                           Order Line Item                                                                                                                                                                                          Y Y           18 ACTIVE                                   8                     9           5             3
+V_PAYMENT_TRANSACTION                                                                                                            VIEW                           Payment Transaction                                                                                                                                                                                      Y Y           19 ACTIVE                                   7                     8           4             2
+V_ORGANIZATION                                                                                                                   VIEW                           Organization                                                                                                                                                                                             Y Y           20 ACTIVE                                   6                     7           3             1
+V_SHIPMENT_HEADER                                                                                                                VIEW                           Shipment                                                                                                                                                                                                 Y Y           20 ACTIVE                                   7                     8           4             4
+V_INVENTORY_BALANCE                                                                                                              VIEW                           Inventory Balance                                                                                                                                                                                        Y Y           22 ACTIVE                                   6                     7           5             3
+V_PRODUCT_SKU                                                                                                                    VIEW                           Product SKU                                                                                                                                                                                              Y Y           25 ACTIVE                                   7                     8           5             3
+V_PRODUCT_MASTER                                                                                                                 VIEW                           Product                                                                                                                                                                                                  Y Y           30 ACTIVE                                   6                     7           4             2
+V_ADDRESS_MASTER                                                                                                                 VIEW                           Address                                                                                                                                                                                                  Y N           40 ACTIVE                                   6                     8           2             1
+V_STATUS_CODE_LOOKUP                                                                                                             VIEW                           Status Code                                                                                                                                                                                              Y N           50 ACTIVE                                   4                     5           3             1
+
+15 rows selected. 
+
+=== SEMANTIC OBJECTS MISSING OR TYPE-MISMATCHED IN ORACLE ===
+
+0 rows selected. 
+
+=== PHYSICAL VIEWS WITHOUT SEMANTIC REGISTRATION ===
+
+0 rows selected. 
+
+=== SEMANTIC COLUMNS MISSING FROM PHYSICAL OBJECTS ===
+
+0 rows selected. 
+
+=== PHYSICAL COLUMNS MISSING SEMANTIC METADATA ===
+
+OBJECT_NAME                                                                                                                       COLUMN_ID COLUMN_NAME                                                                                                                      DATA_TYPE                                                                                                                        STATUS               I
+-------------------------------------------------------------------------------------------------------------------------------- ---------- -------------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------------------------------------------------------- -------------------- -
+V_ADDRESS_MASTER                                                                                                                          3 ADDRESS_LINE2                                                                                                                    VARCHAR2                                                                                                                         ACTIVE               Y
+V_ADDRESS_MASTER                                                                                                                          8 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+V_CUSTOMER_ACCOUNT                                                                                                                        9 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+V_INVENTORY_BALANCE                                                                                                                       7 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+V_INVOICE_HEADER                                                                                                                          9 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+V_ORDER_HEADER                                                                                                                            7 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+V_ORDER_LINE_ITEM                                                                                                                         9 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+V_ORGANIZATION                                                                                                                            7 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+V_PAYMENT_TRANSACTION                                                                                                                     8 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+V_PRODUCT_MASTER                                                                                                                          7 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+V_PRODUCT_SKU                                                                                                                             8 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+V_SHIPMENT_HEADER                                                                                                                         8 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+V_STATUS_CODE_LOOKUP                                                                                                                      5 CREATED_ON                                                                                                                       TIMESTAMP(6)                                                                                                                     ACTIVE               Y
+
+13 rows selected. 
+
+=== FOREIGN-KEY ORPHAN CHECKS ===
+
+INTEGRITY_CHECK                     ORPHAN_COUNT
+----------------------------------- ------------
+SEMANTIC_COLUMN -> SEMANTIC_OBJECT             0
+SEMANTIC_ALIAS -> SEMANTIC_OBJECT              0
+EXAMPLE_QUESTION -> SEMANTIC_OBJECT            0
+
+3 rows selected. 
+
+=== OBJECT FLAG AND STATUS DISTRIBUTION ===
+
+STATUS               I P OBJECT_COUNT
+-------------------- - - ------------
+ACTIVE               Y N            2
+ACTIVE               Y Y           13
+
+2 rows selected. 
+
+=== LOGICALLY INCONSISTENT OBJECT FLAGS ===
+
+0 rows selected. 
+
+=== ENABLED EXAMPLES TARGETING DISABLED OBJECTS ===
+
+0 rows selected. 
+
+=== EXAMPLE COVERAGE BY OBJECT ===
+
+OBJECT_NAME                                                                                                                      TOTAL_EXAMPLES ENABLED_EXAMPLES EXAMPLES_WITH_SQL ENABLED_WITHOUT_SQL
+-------------------------------------------------------------------------------------------------------------------------------- -------------- ---------------- ----------------- -------------------
+V_SHIPMENT_HEADER                                                                                                                             4                4                 4                   0
+V_INVENTORY_BALANCE                                                                                                                           3                3                 3                   0
+V_ORDER_HEADER                                                                                                                                3                3                 3                   0
+V_ORDER_LINE_ITEM                                                                                                                             3                3                 3                   0
+V_PRODUCT_SKU                                                                                                                                 3                3                 3                   0
+V_CUSTOMER_ACCOUNT                                                                                                                            2                2                 2                   0
+V_CUSTOMER_ORDER_SUMMARY                                                                                                                      2                2                 2                   0
+V_INVOICE_HEADER                                                                                                                              2                2                 2                   0
+V_PAYMENT_TRANSACTION                                                                                                                         2                2                 2                   0
+V_PRODUCT_MASTER                                                                                                                              2                2                 2                   0
+V_ADDRESS_MASTER                                                                                                                              1                1                 1                   0
+V_INVENTORY_STATUS                                                                                                                            1                1                 1                   0
+V_ORDER_DETAIL                                                                                                                                1                1                 1                   0
+V_ORGANIZATION                                                                                                                                1                1                 1                   0
+V_STATUS_CODE_LOOKUP                                                                                                                          1                1                 1                   0
+
+15 rows selected. 
+
+=== NORMALIZED ALIAS COLLISIONS ===
+
+NORMALIZED_ALIAS                                                                                                                                                                                         ALIAS_ROWS OBJECT_COUNT
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ---------- ------------
+REGISTERED_OBJECTS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ORDER DETAIL                                                                                                                                                                                                      2            2 
+V_ORDER_DETAIL, V_ORDER_LINE_ITEM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+
+
+1 row selected. 
+
+=== DUPLICATE COLUMN DISPLAY RANKS ===
+
+0 rows selected. 
+
+=== SEMANTIC COLUMN FLAG DISTRIBUTION ===
+
+I I I I COLUMN_COUNT
+- - - - ------------
+N Y N Y           36
+Y N N Y           18
+Y N Y Y           78
+
+3 rows selected. 

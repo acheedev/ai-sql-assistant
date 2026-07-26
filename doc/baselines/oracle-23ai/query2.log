@@ -1,0 +1,786 @@
+set pagesize 500
+set linesize 240
+set trimspool on
+set feedback on
+set verify off
+set tab off
+
+prompt === EXACT SEMANTIC TABLE COUNTS ===
+
+select 'T_SEMANTIC_COLUMN' as table_name,
+       count(*) as exact_row_count
+from t_semantic_column
+
+union all
+
+select 'T_SEMANTIC_EXAMPLE_QUESTION',
+       count(*)
+from t_semantic_example_question
+
+union all
+
+select 'T_SEMANTIC_OBJECT',
+       count(*)
+from t_semantic_object
+
+union all
+
+select 'T_SEMANTIC_OBJECT_ALIAS',
+       count(*)
+from t_semantic_object_alias
+
+order by table_name;
+
+
+prompt === SEMANTIC TABLE COLUMN DEFINITIONS ===
+
+select
+    table_name,
+    column_id,
+    column_name,
+    data_type,
+    data_length,
+    char_length,
+    char_used,
+    data_precision,
+    data_scale,
+    nullable,
+    data_default,
+    identity_column,
+    virtual_column,
+    hidden_column
+from user_tab_cols
+where table_name in (
+    'T_SEMANTIC_COLUMN',
+    'T_SEMANTIC_EXAMPLE_QUESTION',
+    'T_SEMANTIC_OBJECT',
+    'T_SEMANTIC_OBJECT_ALIAS'
+)
+order by
+    table_name,
+    column_id;
+
+
+prompt === SEMANTIC TABLE CONSTRAINTS ===
+
+select
+    c.table_name,
+    c.constraint_name,
+    case c.constraint_type
+        when 'P' then 'PRIMARY KEY'
+        when 'R' then 'FOREIGN KEY'
+        when 'U' then 'UNIQUE'
+        when 'C' then 'CHECK / NOT NULL'
+        when 'V' then 'VIEW CHECK OPTION'
+        when 'O' then 'VIEW READ ONLY'
+        else c.constraint_type
+    end as constraint_type,
+    cc.column_name,
+    cc.position as column_position,
+    c.status,
+    c.validated,
+    c.deferrable,
+    c.deferred,
+    c.delete_rule,
+    r.table_name as referenced_table,
+    rc.column_name as referenced_column
+from user_constraints c
+left join user_cons_columns cc
+    on cc.owner = c.owner
+   and cc.constraint_name = c.constraint_name
+   and cc.table_name = c.table_name
+left join user_constraints r
+    on r.owner = c.r_owner
+   and r.constraint_name = c.r_constraint_name
+left join user_cons_columns rc
+    on rc.owner = r.owner
+   and rc.constraint_name = r.constraint_name
+   and rc.position = cc.position
+where c.table_name in (
+    'T_SEMANTIC_COLUMN',
+    'T_SEMANTIC_EXAMPLE_QUESTION',
+    'T_SEMANTIC_OBJECT',
+    'T_SEMANTIC_OBJECT_ALIAS'
+)
+order by
+    c.table_name,
+    c.constraint_name,
+    cc.position;
+
+
+prompt === SEMANTIC TABLE INDEXES ===
+
+select
+    i.table_name,
+    i.index_name,
+    i.index_type,
+    i.uniqueness,
+    i.status,
+    ic.column_position,
+    ic.column_name,
+    ic.descend
+from user_indexes i
+join user_ind_columns ic
+    on ic.index_name = i.index_name
+   and ic.table_name = i.table_name
+where i.table_name in (
+    'T_SEMANTIC_COLUMN',
+    'T_SEMANTIC_EXAMPLE_QUESTION',
+    'T_SEMANTIC_OBJECT',
+    'T_SEMANTIC_OBJECT_ALIAS'
+)
+order by
+    i.table_name,
+    i.index_name,
+    ic.column_position;
+
+
+prompt === SEMANTIC TABLE AND COLUMN COMMENTS ===
+
+select
+    table_name,
+    comments
+from user_tab_comments
+where table_name in (
+    'T_SEMANTIC_COLUMN',
+    'T_SEMANTIC_EXAMPLE_QUESTION',
+    'T_SEMANTIC_OBJECT',
+    'T_SEMANTIC_OBJECT_ALIAS'
+)
+order by table_name;
+
+
+select
+    table_name,
+    column_name,
+    comments
+from user_col_comments
+where table_name in (
+    'T_SEMANTIC_COLUMN',
+    'T_SEMANTIC_EXAMPLE_QUESTION',
+    'T_SEMANTIC_OBJECT',
+    'T_SEMANTIC_OBJECT_ALIAS'
+)
+order by
+    table_name,
+    column_name;
+
+OUTPUT:
+
+=== EXACT SEMANTIC TABLE COUNTS ===
+
+TABLE_NAME                  EXACT_ROW_COUNT
+--------------------------- ---------------
+T_SEMANTIC_COLUMN                       132
+T_SEMANTIC_EXAMPLE_QUESTION              31
+T_SEMANTIC_OBJECT                        15
+T_SEMANTIC_OBJECT_ALIAS                  60
+
+4 rows selected. 
+
+=== SEMANTIC TABLE COLUMN DEFINITIONS ===
+
+TABLE_NAME                                                                                                                        COLUMN_ID
+-------------------------------------------------------------------------------------------------------------------------------- ----------
+COLUMN_NAME
+--------------------------------------------------------------------------------------------------------------------------------
+DATA_TYPE                                                                                                                        DATA_LENGTH CHAR_LENGTH C DATA_PRECISION  ATA_SCALE N
+-------------------------------------------------------------------------------------------------------------------------------- ----------- ----------- - -------------- ---------- -
+DATA_DEFAULT                                                                     IDE VIR HID
+-------------------------------------------------------------------------------- --- --- ---
+T_SEMANTIC_COLUMN                                                                                                                         1 
+OBJECT_NAME                                                                                                                      
+VARCHAR2                                                                                                                                 128         128 B                           N 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_COLUMN                                                                                                                         2 
+COLUMN_NAME                                                                                                                      
+VARCHAR2                                                                                                                                 128         128 B                           N 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_COLUMN                                                                                                                         3 
+BUSINESS_NAME                                                                                                                    
+VARCHAR2                                                                                                                                 200         200 B                           Y 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_COLUMN                                                                                                                         4 
+IS_HUMAN_READABLE                                                                                                                
+VARCHAR2                                                                                                                                   1           1 B                           N 
+'N'                                                                              NO  NO  NO 
+
+T_SEMANTIC_COLUMN                                                                                                                         5 
+IS_IDENTIFIER                                                                                                                    
+VARCHAR2                                                                                                                                   1           1 B                           N 
+'N'                                                                              NO  NO  NO 
+
+T_SEMANTIC_COLUMN                                                                                                                         6 
+IS_DEFAULT_SELECT                                                                                                                
+VARCHAR2                                                                                                                                   1           1 B                           N 
+'N'                                                                              NO  NO  NO 
+
+T_SEMANTIC_COLUMN                                                                                                                         7 
+IS_FILTERABLE                                                                                                                    
+VARCHAR2                                                                                                                                   1           1 B                           N 
+'Y'                                                                              NO  NO  NO 
+
+T_SEMANTIC_COLUMN                                                                                                                         8 
+DISPLAY_RANK                                                                                                                     
+NUMBER                                                                                                                                    22           0                             N 
+100                                                                              NO  NO  NO 
+
+T_SEMANTIC_COLUMN                                                                                                                         9 
+CREATED_ON                                                                                                                       
+TIMESTAMP(6)                                                                                                                              11           0                           6 N 
+current_timestamp                                                                NO  NO  NO 
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                               1 
+EXAMPLE_QUESTION_ID                                                                                                              
+NUMBER                                                                                                                                    22           0                             N 
+"AISQL"."ISEQ$$_100534".nextval                                                  YES NO  NO 
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                               2 
+QUESTION_TEXT                                                                                                                    
+VARCHAR2                                                                                                                                1000        1000 B                           N 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                               3 
+PREFERRED_OBJECT_NAME                                                                                                            
+VARCHAR2                                                                                                                                 128         128 B                           N 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                               4 
+EXEMPLAR_SQL                                                                                                                     
+CLOB                                                                                                                                    4000           0                             Y 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                               5 
+IS_ENABLED                                                                                                                       
+VARCHAR2                                                                                                                                   1           1 B                           N 
+'Y'                                                                              NO  NO  NO 
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                               6 
+CREATED_ON                                                                                                                       
+TIMESTAMP(6)                                                                                                                              11           0                           6 N 
+current_timestamp                                                                NO  NO  NO 
+
+T_SEMANTIC_OBJECT                                                                                                                         1 
+OBJECT_NAME                                                                                                                      
+VARCHAR2                                                                                                                                 128         128 B                           N 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_OBJECT                                                                                                                         2 
+OBJECT_TYPE                                                                                                                      
+VARCHAR2                                                                                                                                  30          30 B                           N 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_OBJECT                                                                                                                         3 
+BUSINESS_NAME                                                                                                                    
+VARCHAR2                                                                                                                                 200         200 B                           N 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_OBJECT                                                                                                                         4 
+SHORT_DESCRIPTION                                                                                                                
+VARCHAR2                                                                                                                                1000        1000 B                           Y 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_OBJECT                                                                                                                         5 
+INCLUDE_IN_AI                                                                                                                    
+VARCHAR2                                                                                                                                   1           1 B                           N 
+'Y'                                                                              NO  NO  NO 
+
+T_SEMANTIC_OBJECT                                                                                                                         6 
+PREFERRED_FOR_AI                                                                                                                 
+VARCHAR2                                                                                                                                   1           1 B                           N 
+'N'                                                                              NO  NO  NO 
+
+T_SEMANTIC_OBJECT                                                                                                                         7 
+DEFAULT_RANK                                                                                                                     
+NUMBER                                                                                                                                    22           0                             N 
+100                                                                              NO  NO  NO 
+
+T_SEMANTIC_OBJECT                                                                                                                         8 
+STATUS                                                                                                                           
+VARCHAR2                                                                                                                                  20          20 B                           N 
+'ACTIVE'                                                                         NO  NO  NO 
+
+T_SEMANTIC_OBJECT                                                                                                                         9 
+CREATED_ON                                                                                                                       
+TIMESTAMP(6)                                                                                                                              11           0                           6 N 
+current_timestamp                                                                NO  NO  NO 
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                                   1 
+OBJECT_NAME                                                                                                                      
+VARCHAR2                                                                                                                                 128         128 B                           N 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                                   2 
+ALIAS_TERM                                                                                                                       
+VARCHAR2                                                                                                                                 200         200 B                           N 
+                                                                                 NO  NO  NO 
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                                   3 
+ALIAS_WEIGHT                                                                                                                     
+NUMBER                                                                                                                                    22           0                             N 
+10                                                                               NO  NO  NO 
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                                   4 
+CREATED_ON                                                                                                                       
+TIMESTAMP(6)                                                                                                                              11           0                           6 N 
+current_timestamp                                                                NO  NO  NO 
+
+
+28 rows selected. 
+
+=== SEMANTIC TABLE CONSTRAINTS ===
+
+TABLE_NAME
+--------------------------------------------------------------------------------------------------------------------------------
+CONSTRAINT_NAME                                                                                                                  CONSTRAINT_TYPE
+-------------------------------------------------------------------------------------------------------------------------------- -----------------
+COLUMN_NAME
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+COLUMN_POSITION STATUS   VALIDATED     DEFERRABLE     DEFERRED  DELETE_RU REFERENCED_TABLE
+--------------- -------- ------------- -------------- --------- --------- --------------------------------------------------------------------------------------------------------------------------------
+REFERENCED_COLUMN                                                                                                                                                                                                                               
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+T_SEMANTIC_COLUMN                                                                                                                
+SYS_C009423                                                                                                                      CHECK / NOT NULL  
+OBJECT_NAME                                                                                                                                                                                                                                     
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+SYS_C009424                                                                                                                      CHECK / NOT NULL  
+COLUMN_NAME                                                                                                                                                                                                                                     
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+SYS_C009425                                                                                                                      CHECK / NOT NULL  
+IS_HUMAN_READABLE                                                                                                                                                                                                                               
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+SYS_C009426                                                                                                                      CHECK / NOT NULL  
+IS_IDENTIFIER                                                                                                                                                                                                                                   
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+SYS_C009427                                                                                                                      CHECK / NOT NULL  
+IS_DEFAULT_SELECT                                                                                                                                                                                                                               
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+SYS_C009428                                                                                                                      CHECK / NOT NULL  
+IS_FILTERABLE                                                                                                                                                                                                                                   
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+SYS_C009429                                                                                                                      CHECK / NOT NULL  
+DISPLAY_RANK                                                                                                                                                                                                                                    
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+SYS_C009430                                                                                                                      CHECK / NOT NULL  
+CREATED_ON                                                                                                                                                                                                                                      
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+T_SEMANTIC_COLUMN_CHK1                                                                                                           CHECK / NOT NULL  
+IS_HUMAN_READABLE                                                                                                                                                                                                                               
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+T_SEMANTIC_COLUMN_CHK2                                                                                                           CHECK / NOT NULL  
+IS_IDENTIFIER                                                                                                                                                                                                                                   
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+T_SEMANTIC_COLUMN_CHK3                                                                                                           CHECK / NOT NULL  
+IS_DEFAULT_SELECT                                                                                                                                                                                                                               
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+T_SEMANTIC_COLUMN_CHK4                                                                                                           CHECK / NOT NULL  
+IS_FILTERABLE                                                                                                                                                                                                                                   
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+T_SEMANTIC_COLUMN_FK1                                                                                                            FOREIGN KEY       
+OBJECT_NAME                                                                                                                                                                                                                                     
+              1 ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE CASCADE   T_SEMANTIC_OBJECT                                                                                                                
+OBJECT_NAME                                                                                                                                                                                                                                     
+
+T_SEMANTIC_COLUMN                                                                                                                
+T_SEMANTIC_COLUMN_PK                                                                                                             PRIMARY KEY       
+OBJECT_NAME                                                                                                                                                                                                                                     
+              1 ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+T_SEMANTIC_COLUMN_PK                                                                                                             PRIMARY KEY       
+COLUMN_NAME                                                                                                                                                                                                                                     
+              2 ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+SYS_C009443                                                                                                                      CHECK / NOT NULL  
+EXAMPLE_QUESTION_ID                                                                                                                                                                                                                             
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+SYS_C009444                                                                                                                      CHECK / NOT NULL  
+QUESTION_TEXT                                                                                                                                                                                                                                   
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+SYS_C009445                                                                                                                      CHECK / NOT NULL  
+PREFERRED_OBJECT_NAME                                                                                                                                                                                                                           
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+SYS_C009446                                                                                                                      CHECK / NOT NULL  
+IS_ENABLED                                                                                                                                                                                                                                      
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+SYS_C009447                                                                                                                      CHECK / NOT NULL  
+CREATED_ON                                                                                                                                                                                                                                      
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+SYS_C009449                                                                                                                      PRIMARY KEY       
+EXAMPLE_QUESTION_ID                                                                                                                                                                                                                             
+              1 ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+T_SEMANTIC_EXAMPLE_Q_CHK1                                                                                                        CHECK / NOT NULL  
+IS_ENABLED                                                                                                                                                                                                                                      
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+T_SEMANTIC_EXAMPLE_Q_FK1                                                                                                         FOREIGN KEY       
+PREFERRED_OBJECT_NAME                                                                                                                                                                                                                           
+              1 ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE NO ACTION T_SEMANTIC_OBJECT                                                                                                                
+OBJECT_NAME                                                                                                                                                                                                                                     
+
+T_SEMANTIC_OBJECT                                                                                                                
+SYS_C009411                                                                                                                      CHECK / NOT NULL  
+OBJECT_TYPE                                                                                                                                                                                                                                     
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+SYS_C009412                                                                                                                      CHECK / NOT NULL  
+BUSINESS_NAME                                                                                                                                                                                                                                   
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+SYS_C009413                                                                                                                      CHECK / NOT NULL  
+INCLUDE_IN_AI                                                                                                                                                                                                                                   
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+SYS_C009414                                                                                                                      CHECK / NOT NULL  
+PREFERRED_FOR_AI                                                                                                                                                                                                                                
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+SYS_C009415                                                                                                                      CHECK / NOT NULL  
+DEFAULT_RANK                                                                                                                                                                                                                                    
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+SYS_C009416                                                                                                                      CHECK / NOT NULL  
+STATUS                                                                                                                                                                                                                                          
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+SYS_C009417                                                                                                                      CHECK / NOT NULL  
+CREATED_ON                                                                                                                                                                                                                                      
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+SYS_C009422                                                                                                                      PRIMARY KEY       
+OBJECT_NAME                                                                                                                                                                                                                                     
+              1 ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+T_SEMANTIC_OBJECT_CHK1                                                                                                           CHECK / NOT NULL  
+INCLUDE_IN_AI                                                                                                                                                                                                                                   
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+T_SEMANTIC_OBJECT_CHK2                                                                                                           CHECK / NOT NULL  
+PREFERRED_FOR_AI                                                                                                                                                                                                                                
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+T_SEMANTIC_OBJECT_CHK3                                                                                                           CHECK / NOT NULL  
+OBJECT_TYPE                                                                                                                                                                                                                                     
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+T_SEMANTIC_OBJECT_CHK4                                                                                                           CHECK / NOT NULL  
+STATUS                                                                                                                                                                                                                                          
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+SYS_C009437                                                                                                                      CHECK / NOT NULL  
+OBJECT_NAME                                                                                                                                                                                                                                     
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+SYS_C009438                                                                                                                      CHECK / NOT NULL  
+ALIAS_TERM                                                                                                                                                                                                                                      
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+SYS_C009439                                                                                                                      CHECK / NOT NULL  
+ALIAS_WEIGHT                                                                                                                                                                                                                                    
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+SYS_C009440                                                                                                                      CHECK / NOT NULL  
+CREATED_ON                                                                                                                                                                                                                                      
+                ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+T_SEMANTIC_OBJECT_ALIAS_FK1                                                                                                      FOREIGN KEY       
+OBJECT_NAME                                                                                                                                                                                                                                     
+              1 ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE CASCADE   T_SEMANTIC_OBJECT                                                                                                                
+OBJECT_NAME                                                                                                                                                                                                                                     
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+T_SEMANTIC_OBJECT_ALIAS_PK                                                                                                       PRIMARY KEY       
+OBJECT_NAME                                                                                                                                                                                                                                     
+              1 ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+T_SEMANTIC_OBJECT_ALIAS_PK                                                                                                       PRIMARY KEY       
+ALIAS_TERM                                                                                                                                                                                                                                      
+              2 ENABLED  VALIDATED     NOT DEFERRABLE IMMEDIATE                                                                                                                                            
+                                                                                                                                                                                                                                                
+
+
+42 rows selected. 
+
+=== SEMANTIC TABLE INDEXES ===
+
+TABLE_NAME
+--------------------------------------------------------------------------------------------------------------------------------
+INDEX_NAME                                                                                                                       INDEX_TYPE                  UNIQUENES STATUS   COLUMN_POSITION
+-------------------------------------------------------------------------------------------------------------------------------- --------------------------- --------- -------- ---------------
+COLUMN_NAME
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DESC
+----
+T_SEMANTIC_COLUMN                                                                                                                
+T_SEMANTIC_COLUMN_PK                                                                                                             NORMAL                      UNIQUE    VALID                  1 
+OBJECT_NAME                                                                                                                                                                                                                                     
+ASC 
+
+T_SEMANTIC_COLUMN                                                                                                                
+T_SEMANTIC_COLUMN_PK                                                                                                             NORMAL                      UNIQUE    VALID                  2 
+COLUMN_NAME                                                                                                                                                                                                                                     
+ASC 
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+SYS_C009449                                                                                                                      NORMAL                      UNIQUE    VALID                  1 
+EXAMPLE_QUESTION_ID                                                                                                                                                                                                                             
+ASC 
+
+T_SEMANTIC_OBJECT                                                                                                                
+SYS_C009422                                                                                                                      NORMAL                      UNIQUE    VALID                  1 
+OBJECT_NAME                                                                                                                                                                                                                                     
+ASC 
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+T_SEMANTIC_OBJECT_ALIAS_PK                                                                                                       NORMAL                      UNIQUE    VALID                  1 
+OBJECT_NAME                                                                                                                                                                                                                                     
+ASC 
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+T_SEMANTIC_OBJECT_ALIAS_PK                                                                                                       NORMAL                      UNIQUE    VALID                  2 
+ALIAS_TERM                                                                                                                                                                                                                                      
+ASC 
+
+
+6 rows selected. 
+
+=== SEMANTIC TABLE AND COLUMN COMMENTS ===
+
+TABLE_NAME
+--------------------------------------------------------------------------------------------------------------------------------
+COMMENTS                                                                                                                                                                                                                                        
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+T_SEMANTIC_COLUMN                                                                                                                
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+                                                                                                                                                                                                                                                
+
+
+4 rows selected. 
+
+
+TABLE_NAME
+--------------------------------------------------------------------------------------------------------------------------------
+COLUMN_NAME
+--------------------------------------------------------------------------------------------------------------------------------
+COMMENTS                                                                                                                                                                                                                                        
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+T_SEMANTIC_COLUMN                                                                                                                
+BUSINESS_NAME                                                                                                                    
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+COLUMN_NAME                                                                                                                      
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+CREATED_ON                                                                                                                       
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+DISPLAY_RANK                                                                                                                     
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+IS_DEFAULT_SELECT                                                                                                                
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+IS_FILTERABLE                                                                                                                    
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+IS_HUMAN_READABLE                                                                                                                
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+IS_IDENTIFIER                                                                                                                    
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_COLUMN                                                                                                                
+OBJECT_NAME                                                                                                                      
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+CREATED_ON                                                                                                                       
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+EXAMPLE_QUESTION_ID                                                                                                              
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+EXEMPLAR_SQL                                                                                                                     
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+IS_ENABLED                                                                                                                       
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+PREFERRED_OBJECT_NAME                                                                                                            
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                      
+QUESTION_TEXT                                                                                                                    
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+BUSINESS_NAME                                                                                                                    
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+CREATED_ON                                                                                                                       
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+DEFAULT_RANK                                                                                                                     
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+INCLUDE_IN_AI                                                                                                                    
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+OBJECT_NAME                                                                                                                      
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+OBJECT_TYPE                                                                                                                      
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+PREFERRED_FOR_AI                                                                                                                 
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+SHORT_DESCRIPTION                                                                                                                
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT                                                                                                                
+STATUS                                                                                                                           
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+ALIAS_TERM                                                                                                                       
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+ALIAS_WEIGHT                                                                                                                     
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+CREATED_ON                                                                                                                       
+                                                                                                                                                                                                                                                
+
+T_SEMANTIC_OBJECT_ALIAS                                                                                                          
+OBJECT_NAME                                                                                                                      
+                                                                                                                                                                                                                                                
+
+
+28 rows selected. 
+

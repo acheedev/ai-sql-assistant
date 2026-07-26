@@ -1,0 +1,248 @@
+set pagesize 200
+set linesize 220
+set trimspool on
+set feedback on
+set verify off
+
+prompt === SESSION IDENTITY ===
+
+select
+    sys_context('USERENV', 'SESSION_USER')    as session_user,
+    sys_context('USERENV', 'CURRENT_SCHEMA')  as current_schema,
+    sys_context('USERENV', 'DB_NAME')         as database_name,
+    sys_context('USERENV', 'CON_NAME')        as container_name,
+    sys_context('USERENV', 'SERVICE_NAME')    as service_name
+from dual;
+
+prompt === DATABASE VERSION ===
+
+select banner_full
+from v$version
+where banner_full like 'Oracle Database%';
+
+prompt === OWNED OBJECTS ===
+
+select
+    object_type,
+    count(*) as object_count
+from user_objects
+group by object_type
+order by object_type;
+
+prompt === TABLES AND VIEWS ===
+
+select table_name
+from user_tables
+order by table_name;
+
+select view_name
+from user_views
+order by view_name;
+
+prompt === TABLE ROW COUNTS FROM STATISTICS ===
+
+select
+    table_name,
+    num_rows,
+    last_analyzed
+from user_tables
+order by table_name;
+
+prompt === DIRECT SYSTEM PRIVILEGES ===
+
+select privilege
+from user_sys_privs
+order by privilege;
+
+prompt === DIRECT OBJECT PRIVILEGES RECEIVED ===
+
+select
+    owner,
+    table_name,
+    privilege,
+    grantor
+from user_tab_privs_recd
+order by owner, table_name, privilege;
+
+prompt === ENABLED ROLES ===
+
+select role
+from session_roles
+order by role;
+
+
+Output:
+
+=== SESSION IDENTITY ===
+
+SESSION_USER
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CURRENT_SCHEMA
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DATABASE_NAME
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CONTAINER_NAME
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SERVICE_NAME                                                                                                                                                                                                                
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+AISQL                                                                                                                                                                                                                       
+AISQL                                                                                                                                                                                                                       
+FREEPDB1                                                                                                                                                                                                                    
+FREEPDB1                                                                                                                                                                                                                    
+freepdb1                                                                                                                                                                                                                    
+
+
+1 row selected. 
+
+=== DATABASE VERSION ===
+
+BANNER_FULL                                                                                                                                                                                                                 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Oracle Database 23ai Free Release 23.0.0.0.0 - Develop, Learn, and Run for Free
+Version 23.9.0.25.07
+
+
+1 row selected. 
+
+=== OWNED OBJECTS ===
+
+OBJECT_TYPE             OBJECT_COUNT
+----------------------- ------------
+INDEX                             42
+LOB                               11
+PACKAGE                           10
+PACKAGE BODY                      10
+PROCEDURE                         10
+SEQUENCE                          40
+TABLE                             23
+TRIGGER                            2
+TYPE                               5
+TYPE BODY                          1
+VIEW                              15
+
+11 rows selected. 
+
+=== TABLES AND VIEWS ===
+
+TABLE_NAME                                                                                                                      
+--------------------------------------------------------------------------------------------------------------------------------
+ERROR_LOG
+ORDER_ERRORS
+ORDER_LINE_ITEM
+ORDER_STAGING
+OTK_ERROR_LOG
+OTK_ERROR_LOG_JSON
+PRODUCT_MASTER
+T_ADDRESS_MASTER
+T_CUSTOMER_ACCOUNT
+T_INVENTORY_BALANCE
+T_INVOICE_HEADER
+T_ORDER_HEADER
+T_ORDER_LINE_ITEM
+T_ORGANIZATION
+T_PAYMENT_TRANSACTION
+T_PRODUCT_MASTER
+T_PRODUCT_SKU
+T_SEMANTIC_COLUMN
+T_SEMANTIC_EXAMPLE_QUESTION
+T_SEMANTIC_OBJECT
+T_SEMANTIC_OBJECT_ALIAS
+T_SHIPMENT_HEADER
+T_STATUS_CODE_LOOKUP
+
+23 rows selected. 
+
+
+VIEW_NAME                                                                                                                       
+--------------------------------------------------------------------------------------------------------------------------------
+V_ADDRESS_MASTER
+V_CUSTOMER_ACCOUNT
+V_CUSTOMER_ORDER_SUMMARY
+V_INVENTORY_BALANCE
+V_INVENTORY_STATUS
+V_INVOICE_HEADER
+V_ORDER_DETAIL
+V_ORDER_HEADER
+V_ORDER_LINE_ITEM
+V_ORGANIZATION
+V_PAYMENT_TRANSACTION
+V_PRODUCT_MASTER
+V_PRODUCT_SKU
+V_SHIPMENT_HEADER
+V_STATUS_CODE_LOOKUP
+
+15 rows selected. 
+
+=== TABLE ROW COUNTS FROM STATISTICS ===
+
+TABLE_NAME                                                                                                                         NUM_ROWS LAST_ANAL
+-------------------------------------------------------------------------------------------------------------------------------- ---------- ---------
+ERROR_LOG                                                                                                                                 2 23-APR-26
+ORDER_ERRORS                                                                                                                             12 26-APR-26
+ORDER_LINE_ITEM                                                                                                                          48 26-APR-26
+ORDER_STAGING                                                                                                                            15 24-APR-26
+OTK_ERROR_LOG                                                                                                                                        
+OTK_ERROR_LOG_JSON                                                                                                                                   
+PRODUCT_MASTER                                                                                                                           14 25-APR-26
+T_ADDRESS_MASTER                                                                                                                          8 22-APR-26
+T_CUSTOMER_ACCOUNT                                                                                                                        9 22-APR-26
+T_INVENTORY_BALANCE                                                                                                                      14 22-APR-26
+T_INVOICE_HEADER                                                                                                                          8 22-APR-26
+T_ORDER_HEADER                                                                                                                           10 22-APR-26
+T_ORDER_LINE_ITEM                                                                                                                        18 22-APR-26
+T_ORGANIZATION                                                                                                                            5 22-APR-26
+T_PAYMENT_TRANSACTION                                                                                                                     7 22-APR-26
+T_PRODUCT_MASTER                                                                                                                          5 22-APR-26
+T_PRODUCT_SKU                                                                                                                             8 22-APR-26
+T_SEMANTIC_COLUMN                                                                                                                       132 27-APR-26
+T_SEMANTIC_EXAMPLE_QUESTION                                                                                                              31 27-APR-26
+T_SEMANTIC_OBJECT                                                                                                                        15 27-APR-26
+T_SEMANTIC_OBJECT_ALIAS                                                                                                                  60 27-APR-26
+T_SHIPMENT_HEADER                                                                                                                         8 22-APR-26
+T_STATUS_CODE_LOOKUP                                                                                                                     21 21-APR-26
+
+23 rows selected. 
+
+=== DIRECT SYSTEM PRIVILEGES ===
+
+PRIVILEGE                               
+----------------------------------------
+UNLIMITED TABLESPACE
+
+1 row selected. 
+
+=== DIRECT OBJECT PRIVILEGES RECEIVED ===
+
+0 rows selected. 
+
+=== ENABLED ROLES ===
+
+ROLE                                                                                                                            
+--------------------------------------------------------------------------------------------------------------------------------
+ACCHK_READ
+CAPTURE_ADMIN
+CONNECT
+DATAPUMP_EXP_FULL_DATABASE
+DATAPUMP_IMP_FULL_DATABASE
+DBA
+DGPDB_ROLE
+EXECUTE_CATALOG_ROLE
+EXP_FULL_DATABASE
+GATHER_SYSTEM_STATISTICS
+HS_ADMIN_EXECUTE_ROLE
+HS_ADMIN_SELECT_ROLE
+IMP_FULL_DATABASE
+JAVA_ADMIN
+OLAP_DBA
+OLAP_XS_ADMIN
+OPTIMIZER_PROCESSING_RATE
+PPLB_ROLE
+RESOURCE
+SCHEDULER_ADMIN
+SELECT_CATALOG_ROLE
+SODA_APP
+WM_ADMIN_ROLE
+XDBADMIN
+XDB_SET_INVOKER
+
+25 rows selected. 
