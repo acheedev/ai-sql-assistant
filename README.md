@@ -24,6 +24,22 @@ and get back:
 
 This repo demonstrates how to connect an LLM to enterprise data without handing it the whole database and hoping for the best.
 
+## Current State
+
+Implemented now:
+
+- Oracle-backed semantic metadata loaded from database tables,
+- constrained SQL generation through OpenAI,
+- deterministic read-only SQL validation,
+- Oracle execution through a connection pool,
+- business-readable result explanations,
+- FastAPI, Streamlit, and CLI entry points,
+- successful-response TTL caching,
+- structured JSON and console logging,
+- mocked tests for all seven pipeline outcomes plus cache, prompt, and validator behavior.
+
+The current validator is intentionally a first safety gate. It enforces single-statement `SELECT`/`WITH` shape and rejects risky keywords, but it does not yet parse SQL or independently enforce the semantic object and column allowlist. Production hardening should add parsed object authorization, result and execution limits, and a least-privilege Oracle account.
+
 ## The Flow
 
 ```text
@@ -86,6 +102,8 @@ GRANT REVOKE EXECUTE EXEC CALL BEGIN
 ```
 
 The prompt also tells the model to use only listed objects and columns, prefer human-readable fields, use Oracle syntax such as `FETCH FIRST N ROWS ONLY`, and return exactly `CANNOT_ANSWER` when the semantic schema cannot answer the question.
+
+Important current boundary: semantic-object and column restrictions are prompt-enforced, not yet parser-enforced. The Oracle account should therefore expose only approved read surfaces until deterministic allowlist enforcement is added.
 
 ## Pipeline Statuses
 
@@ -311,6 +329,17 @@ Important logged events include:
 - `pipeline_complete`
 
 Use `request_id` as the thread that ties everything together.
+
+## Near-Term Hardening
+
+The next engineering phase is focused on trust and evaluation rather than UI expansion:
+
+- parse SQL and enforce semantic object and column allowlists,
+- cap execution time, result rows, and response size,
+- avoid unbounded `fetchall()` behavior,
+- separate database failures from unexpected internal failures,
+- version cache keys by schema, prompt, model, and authorization context,
+- add an evaluation corpus for SQL correctness, semantic accuracy, safety, and explanation faithfulness.
 
 ## Design Constraints
 
