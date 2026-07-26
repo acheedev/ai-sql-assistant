@@ -1,13 +1,15 @@
 # AI SQL Assistant — Technical Debt
 
-This document records gaps found by comparing the current implementation with the product intent and the guarantees described in `README.md`.
+This document records gaps found by comparing the current implementation with the product intent in `README.md`, the normative boundary in `SECURITY.md`, and the alpha direction in `doc/FUTURE.md`.
 
-It is a working engineering backlog, not a criticism of the prototype. The current code proves the end-to-end concept. The next phase is to turn that concept into a controlled alpha product.
+It is a working engineering backlog, not a criticism of the prototype. The current code proves the Oracle/OpenAI end-to-end concept. The next phase is to turn that concept into a controlled, portable alpha product supporting Oracle, PostgreSQL, and multiple approved LLM providers.
+
+See `doc/PLATFORM_ARCHITECTURE.md` for the target database and provider contracts.
 
 ## Priority Definitions
 
-- **P0 — Alpha blocker:** security, data exposure, correctness, or operational risk that must be resolved before outside users are allowed to rely on the system.
-- **P1 — Required for a credible alpha:** reliability, observability, evaluation, and deployment work needed before a sustained pilot.
+- **P0 — Alpha blocker:** security, data exposure, correctness, or operational risk that must be resolved before outside users rely on the system.
+- **P1 — Required for a credible alpha:** portability, reliability, observability, evaluation, and deployment work needed before a sustained pilot.
 - **P2 — Post-alpha hardening:** maintainability, performance, and product maturity work that can follow a controlled alpha.
 
 ---
@@ -18,332 +20,366 @@ It is a working engineering backlog, not a criticism of the prototype. The curre
 
 **Current state**
 
-`validator.py` checks that SQL begins with `SELECT` or `WITH`, contains no semicolon after normalization, and does not contain a short list of forbidden keywords.
-
-The prompt tells the model to use only semantic objects and columns, but the validator does not independently enforce that rule.
+`validator.py` checks statement shape, semicolons, and a short forbidden-keyword list. The prompt tells the model to use approved objects and columns, but code does not independently enforce that rule.
 
 **Risk**
 
-- The model can reference raw tables, unapproved views, columns, functions, packages, database links, or schemas.
-- A syntactically read-only statement can still invoke functions with side effects or expensive behavior.
-- Oracle `WITH` syntax and callable functions make keyword filtering an insufficient authorization boundary.
+- A model can reference raw tables, unapproved schemas, catalog objects, functions, packages/routines, database links, foreign servers, extensions, or expensive constructs.
+- A syntactically read-only query can still expose protected data or invoke unsafe behavior.
+- Regex authorization cannot safely cover either Oracle or PostgreSQL syntax.
 
 **Required direction**
 
-- Parse Oracle SQL into an AST.
-- Resolve every referenced object, column, function, and database link.
-- Enforce an explicit allowlist derived from the semantic layer and authorization context.
-- Reject unresolved, ambiguous, cross-schema, database-link, dynamic, or callable constructs by default.
-- Keep the decision deterministic; do not place an LLM inside the authorization path.
+- Parse SQL into a dialect-aware AST.
+- Resolve and authorize every schema, object, column, callable object, type, and remote-data construct.
+- Enforce an allowlist derived from semantic metadata and authenticated policy context.
+- Reject unresolved or unsupported syntax by default.
+- Keep the allow/deny decision deterministic and LLM-free.
+- Independently require least-privilege database identities so parser failure cannot expand access.
 
-### 2. No authentication or authorization boundary
+### 2. The application is structurally coupled to Oracle
 
 **Current state**
 
-The FastAPI application exposes `/query` and optional raw result rows without authentication. `api.py` contains a TODO for API-key middleware.
+Core modules import `oracledb`, create an Oracle pool directly, execute Oracle-specific health SQL, and build prompts with unconditional Oracle syntax rules. Semantic metadata queries and result assumptions are Oracle-specific.
 
 **Risk**
 
-Anyone who can reach the service can generate SQL, execute it, consume LLM budget, and request raw database results. There is no user, role, tenant, or policy context.
+Adding PostgreSQL directly to the current structure would spread database conditionals through the pipeline, prompt builder, authorization layer, health checks, serialization, settings, and tests. That creates two partially divergent products rather than one portable product.
 
 **Required direction**
 
-- Add authenticated identities before any shared deployment.
-- Define roles and per-user/per-group data access.
-- Bind semantic objects and result visibility to authorization context.
-- Include authorization context in cache keys, audit records, and evaluation scenarios.
+- Introduce a `DatabaseAdapter` contract before implementing PostgreSQL.
+- Move driver, pool lifecycle, semantic loading, dialect rules, authorization integration, execution limits, serialization, health, and error normalization behind adapters.
+- Re-implement current behavior as an Oracle adapter.
+- Add PostgreSQL as a first-class adapter satisfying the same normalized contracts.
+- Keep the API, pipeline, cache, audit, and semantic business model database-neutral.
 
-### 3. Query execution is unbounded
+### 3. The application is structurally coupled to OpenAI
 
 **Current state**
 
-`db.py` executes generated SQL and calls `cursor.fetchall()` with no server-side statement timeout, row cap, byte cap, fetch batching, cancellation, or resource governance.
+`llm.py`, health checking, settings, retries, and response handling directly use the OpenAI SDK and OpenAI response model.
 
 **Risk**
 
-A valid `SELECT` can consume excessive CPU, I/O, memory, database sessions, network bandwidth, or application memory. The API's 30-second UI timeout does not cancel work on the server or database.
+- Provider switching requires core-code changes.
+- Provider errors and usage metadata leak into product behavior.
+- Cost, latency, privacy, and data-residency choices cannot be governed cleanly.
+- SQL generation and explanation cannot use different approved providers/models.
+- Fallback behavior could later transmit protected data to an unapproved provider.
 
 **Required direction**
 
-- Use a least-privilege read-only Oracle account.
-- Configure per-session query timeout/call timeout and resource limits.
-- Enforce a maximum row count and response-size budget.
-- Fetch incrementally rather than using unbounded `fetchall()`.
-- Add cancellation and a hard concurrency limit.
-- Consider an explain/estimate gate for unusually expensive plans.
+- Introduce an `LLMProvider` contract before adding another SDK.
+- Re-implement current behavior through an OpenAI adapter.
+- Add direct adapters for Anthropic and Google Gemini.
+- Normalize provider/model identity, usage, latency, request IDs, finish reasons, retries, timeouts, and failure categories.
+- Make provider/model selection policy- and configuration-driven.
+- Require explicit data-classification and fallback policy before transmitting prompts or rows.
 
-### 4. Error responses can leak internal and database details
+### 4. No authentication or authorization boundary
 
-**Current state**
-
-Pipeline failures place raw exception text into `PipelineResult.message`, including:
-
-- `Unhandled pipeline error: {exc}`
-- `Database execution failed: {exc}`
-- `LLM call failed: {exc}`
-- `Explanation generation failed: {exc}`
-
-The API returns that message to callers. Tests explicitly assert that Oracle-style connection details remain in the response message.
-
-**README discrepancy**
-
-The README states that API errors must never expose connection strings, credentials, or raw Oracle diagnostics.
+The API exposes `/query` and optional raw rows without authentication. Anyone who can reach it can generate SQL, consume provider budget, and request data.
 
 **Required direction**
 
-- Return stable public error codes and safe user-facing messages.
-- Log detailed exceptions only in protected server logs.
-- Add structured exception classes for schema loading, execution, timeout, authorization, provider, and internal failures.
-- Add regression tests that seed credential-like and Oracle diagnostic text and prove it is redacted from responses.
+- Add authenticated principals before shared deployment.
+- Define roles and per-user/per-group access.
+- Bind semantic objects, columns, raw-result visibility, database deployment, and provider policy to authorization context.
+- Include that context in cache keys, audit records, and evaluations.
 
-### 5. Cache isolation is unsafe for a real product
+### 5. Database privilege assumptions are not verified by the application or deployment process
 
-**Current state**
-
-The cache key is only a normalized natural-language question. Successful `PipelineResult` objects, including SQL, explanation, and raw rows, are stored in a process-global cache.
-
-**Risk**
-
-- Different users or roles can receive data generated under another authorization context.
-- Results remain stale when semantic metadata, prompt rules, model versions, or source data change.
-- Sensitive rows remain in process memory.
-- Multiple application workers have independent, inconsistent caches.
+The product assumes a least-privilege runtime identity but does not provision, inspect, or negatively test effective privileges.
 
 **Required direction**
 
-Either disable result caching for alpha or version and isolate keys by at least:
+- Document Oracle and PostgreSQL least-privilege deployment patterns.
+- Automate negative tests for raw tables, system catalogs, callable objects, remote-data access, role changes, DML, DDL, and locking.
+- Audit inherited roles, ownership, and `PUBLIC` grants.
+- Fail deployment readiness when required privilege evidence is missing or invalid.
 
-- authenticated principal and role,
-- authorization policy version,
-- semantic-schema version,
+### 6. Query execution is unbounded
+
+`db.py` calls `cursor.fetchall()` without a statement timeout, row cap, byte cap, fetch batching, cancellation, or hard concurrency policy.
+
+**Required direction**
+
+- Implement platform-specific timeout and cancellation through database adapters.
+- Enforce maximum rows and bytes.
+- Fetch incrementally.
+- Add bounded pool/concurrency behavior.
+- Consider dialect-specific estimated-cost gates.
+
+### 7. Error responses can leak provider, database, and internal details
+
+Pipeline failures place raw exception text into public messages. The current behavior can expose database diagnostics, connection details, and provider text.
+
+**Required direction**
+
+- Return stable public error codes and safe messages.
+- Keep protected diagnostics only in controlled logs.
+- Normalize database and provider failures behind adapter exception contracts.
+- Add redaction regressions for Oracle, PostgreSQL, OpenAI, Anthropic, and Gemini-shaped errors.
+
+### 8. Cache isolation is unsafe
+
+The cache key is only the normalized question, while cached values include SQL, explanations, and raw rows.
+
+**Required direction**
+
+Disable result caching for alpha or include at least:
+
+- principal/authorization scope,
+- database deployment and platform,
+- semantic-schema and policy versions,
+- provider, model, and provider-adapter version,
+- database-adapter version,
 - prompt version,
-- model/provider version,
-- database/source identifier,
-- normalized question and relevant request options.
+- normalized question and request options.
 
-Define data-retention, eviction, and invalidation behavior before re-enabling it.
+Define retention, invalidation, and protected-data handling before re-enabling it.
 
-### 6. Database results are treated as trusted instructions during explanation
+### 9. Database results are treated as trusted instructions during explanation
 
-**Current state**
-
-The explanation prompt interpolates Python representations of database rows directly into an LLM prompt. Result values are not delimited as untrusted data, typed, serialized through a stable format, or screened for prompt-injection content.
-
-**Risk**
-
-A database value can manipulate the explanation model, cause unfaithful output, expose data from the prompt, or produce unsafe links/markup in the UI.
+Rows are interpolated directly into an LLM prompt as Python representations.
 
 **Required direction**
 
-- Serialize a bounded, typed result envelope.
-- Mark all row values as untrusted data, never instructions.
-- Add prompt-injection test cases stored in database fields.
-- Validate explanation structure and require evidence references to returned rows/aggregates.
-- Prefer deterministic summaries for simple result shapes.
+- Serialize a bounded typed envelope before any provider call.
+- Mark rows as untrusted data.
+- Add stored-data prompt-injection cases.
+- Permit deterministic, redacted, aggregate-only, local, or disabled explanation modes.
+- Enforce provider/data-classification policy separately for explanation.
 
-### 7. Sensitive data can be written to logs
+### 10. Provider transmission and fallback policy does not exist
 
-**Current state**
-
-Debug logs can contain the complete prompt, generated SQL, and complete database rows. User questions are logged directly. Several lower-level events do not carry `request_id`.
-
-**README discrepancy**
-
-The README presents `request_id` as the thread tying the full operation together, but `db_execute_complete`, validator events, prompt events, and explanation events are not consistently enriched with it.
+The application has no formal decision point governing which schema, question, SQL, or result data may be sent to which provider or hosted route.
 
 **Required direction**
 
-- Establish a logging data-classification policy.
-- Remove raw rows and full prompts from default logs.
-- Redact or hash sensitive literals in SQL and questions.
-- Propagate request context through every layer.
-- Add log rotation, retention, access controls, and structured exception fields.
-- Ensure logging failures cannot break query processing.
+- Resolve provider policy before constructing a request.
+- Define approved providers, models, routes, regions, and data classes.
+- Default to no cross-provider fallback.
+- Audit provider/model provenance without storing protected payloads by default.
 
-### 8. The UI discards the API's structured non-200 responses
+### 11. Sensitive data can be written to logs
 
-**Current state**
-
-`app.py` calls `raise_for_status()`. FastAPI intentionally returns 422 or 502 for pipeline statuses, so the UI catches `HTTPError` and replaces the structured response with a generic message such as `API returned 422.`
-
-The status badge mappings and detailed messages for `QUESTION_ERROR`, `UNSAFE_SQL`, `DB_ERROR`, `LLM_ERROR`, and `EXPLANATION_ERROR` are therefore bypassed on normal error paths.
+Debug logs can contain complete prompts, generated SQL, database rows, and user questions. Several events lack `request_id`.
 
 **Required direction**
 
-- Parse the JSON response body for expected API statuses before treating it as a transport failure.
-- Preserve `request_id`, status, safe message, and permitted SQL/results.
-- Add API-to-UI integration tests for every status.
+- Establish logging classification and redaction policy.
+- Remove raw rows and full prompts from ordinary logs.
+- Propagate request context through every layer and adapter.
+- Add rotation, retention, access control, and failure-safe logging.
 
-### 9. Direct apply of provider and database exceptions creates unstable API contracts
+### 12. The UI discards structured non-200 API responses
 
-The application currently mixes transport failures, expected product outcomes, provider errors, database errors, and unexpected internal exceptions into seven broad statuses. Unexpected exceptions are labeled `DB_ERROR` even when they are unrelated to Oracle.
+`raise_for_status()` converts expected 422/502 product outcomes into generic transport errors.
 
 **Required direction**
 
-Define a stable public error taxonomy and separate:
+Parse expected response bodies, preserve `request_id` and structured status, and add integration tests for every result path.
 
-- invalid request,
-- unanswerable question,
-- authorization rejection,
-- unsafe SQL,
-- query timeout/resource limit,
-- database unavailable,
-- provider unavailable,
-- explanation degraded,
-- internal error.
+### 13. Public result/error semantics are unstable
 
-An explanation failure after successful SQL execution should be considered a partial/degraded success rather than automatically discarding a valid answer behind HTTP 502.
+Provider failures, database failures, authorization rejections, expected product outcomes, and internal exceptions are compressed into seven broad statuses. Unexpected errors are mislabeled as database failures, and successful SQL with failed explanation becomes a 502.
+
+**Required direction**
+
+Define stable outcomes for invalid request, unanswerable question, authorization rejection, unsafe SQL, timeout/resource limit, database unavailable, provider unavailable, provider refusal, malformed model output, explanation degraded, and internal error.
 
 ---
 
 ## P1 — Required for a Credible Alpha
 
-### 10. Response-model behavior does not match its documentation
+### 14. Prompt construction is hard-coded to Oracle
 
-`QueryResponse` says `sql` and `row_count` are `None` on error paths. In practice:
+`prompt.py` unconditionally identifies the target as Oracle and teaches Oracle-specific syntax.
 
-- `sql` is returned for unsafe SQL, database errors, and explanation errors when generation succeeded.
-- `row_count` is usually `0` on early error paths because `PipelineResult.results` defaults to an empty list.
-- `is_safe` is hidden unless the final status is `OK`, even when validation succeeded before a later failure.
+**Required direction**
 
-Choose and document one contract, then test it at the API boundary.
+- Accept a dialect rule set from the active database adapter.
+- Maintain reviewed Oracle and PostgreSQL examples.
+- Version prompt templates independently of provider adapters.
+- Test that one dialect never emits syntax from the other.
 
-### 11. Application and package versions disagree
+### 15. Semantic metadata has no cross-platform normalized contract
 
-- `pyproject.toml` declares version `0.1.0`.
-- FastAPI declares version `1.0.0`.
+Current semantic loading is tied to Oracle tables and Oracle driver values.
 
-Use one source of truth and expose build/version metadata in health and logs.
+**Required direction**
 
-### 12. The API console-script entry point is not a valid server launcher
+Define a normalized semantic model shared by both platforms, with dialect-specific migrations and physical metadata. Include platform, physical object identity, sensitivity, authorization tags, and semantic version.
 
-`pyproject.toml` defines:
+### 16. No normalized result-type contract
 
-```toml
-sql-assistant-api = "sql_assistant.api:app"
-```
+Oracle values such as `Decimal`, timestamps, LOBs, and bytes are not centrally normalized. PostgreSQL adds UUID, JSONB, arrays, intervals, and additional driver-native values.
 
-A console script expects a callable command function, not an ASGI application object requiring `scope`, `receive`, and `send`. Provide a real launcher or remove the entry point and document `uvicorn` as the supported command.
+**Required direction**
 
-### 13. Streamlit module has import-time side effects
+Create one bounded JSON-safe result model with explicit handling for all supported platform types and safe behavior for unsupported or oversized values.
 
-`app.py` calls `main_page()` at module import time. The console entry point imports the module before invoking `main()`, which can execute Streamlit UI code outside the intended runner before spawning Streamlit.
+### 17. Provider request/response contract is incomplete
 
-Move rendering behind an explicit entry function and test the packaged command.
+The model is hard-coded and calls lack explicit total timeout, output-token limit, prompt version, provider request ID, normalized usage, or cost metadata.
 
-### 14. Health check does not verify LLM service health
+**Required direction**
 
-The health endpoint only constructs an OpenAI client when an API key exists. It does not verify credentials, network access, model availability, or provider health.
+Normalize provider request/response evidence and keep model identifiers and configurable cost rates outside code.
 
-Split health into:
+### 18. Retry behavior is provider-specific and incomplete
 
-- **liveness:** process is running,
-- **readiness:** required configuration, Oracle connectivity, schema availability, and optional provider probe,
-- **dependency detail:** protected operational endpoint, not public diagnostics.
+The current retry code has an unused helper, no jitter, no `Retry-After` handling, blocking sleeps, and confusing delay logging.
 
-### 15. Semantic schema is reloaded on every uncached question
+**Required direction**
 
-The semantic layer is queried for every pipeline execution. There is no schema-version token, bounded metadata cache, or explicit invalidation.
+Implement bounded adapter-level retry policies while preserving stable product outcomes. Retry must never change provider or route unless policy explicitly permits it.
 
-Add a versioned semantic-schema snapshot with controlled refresh and include its version in audit records and answer metadata.
+### 19. Health checking is Oracle/OpenAI-shaped
 
-### 16. LLM configuration is hard-coded and incomplete
+The current `/health` performs `SELECT 1 FROM DUAL` and only constructs an OpenAI client.
 
-The model name is fixed in code. Calls do not set an explicit request timeout, output-token limit, provider request identifier, or application prompt version.
+**Required direction**
 
-Make model/provider settings explicit and versioned. Record them with each request and evaluation result.
+- Add `/health/live` without external dependencies.
+- Add `/health/ready` through the active database and provider adapters.
+- Test the configured deployment combination, not every supported adapter.
+- Avoid a billable model call on every probe.
+- Protect detailed dependency diagnostics.
 
-### 17. Retry behavior is incomplete
+### 20. Response-model behavior does not match documentation
 
-- `_is_retryable()` is unused.
-- Retry logs report the delay before the failed attempt rather than the wait before the next attempt.
-- There is no jitter or `Retry-After` handling.
-- A blocking `time.sleep()` occupies a worker thread.
+`sql`, `row_count`, and `is_safe` do not consistently follow their documented error-path behavior.
 
-Adopt a tested retry policy with bounded total duration and provider guidance.
+Choose one contract and test it at the API boundary.
 
-### 18. Question input has no maximum size or abuse controls
+### 21. Application and package versions disagree
 
-Pydantic enforces only a minimum length of one character. There is no request-size cap, rate limit, quota, concurrency policy, or per-user budget.
+`pyproject.toml` declares `0.1.0`; FastAPI declares `1.0.0`.
 
-### 19. Oracle connection-pool lifecycle is unmanaged
+Use one version source and include build/adapter versions in health, responses, and audit records.
 
-The global pool is lazily created but never explicitly closed during application shutdown. Pool sizing and acquisition behavior are fixed in code and not exposed as settings.
+### 22. The API console-script entry point is invalid
 
-Initialize and close the pool through application lifespan hooks. Add acquisition timeout, health metrics, and environment-specific sizing.
+The console-script target points to an ASGI application object rather than a callable launcher.
 
-### 20. No deterministic result contract for Oracle data types
+Provide a launcher or document `uvicorn` as the supported command.
 
-Raw Oracle values may include `Decimal`, dates, timestamps, LOBs, bytes, or other objects that are not consistently JSON serializable or suitable for prompt interpolation and CSV output.
+### 23. Streamlit has import-time side effects
 
-Create a central typed serialization layer with size limits and explicit handling for LOBs and binary data.
+`main_page()` runs on import, conflicting with console-script behavior and testability.
 
-### 21. Empty-result behavior wastes an LLM call
+Move rendering behind explicit entry functions.
 
-An empty result set still goes through explanation generation. Return a deterministic empty-result explanation and avoid provider cost and latency.
+### 24. Semantic schema is reloaded on every uncached question
 
-### 22. CLI error handling is not automation-friendly
+Add a bounded, versioned semantic snapshot with explicit refresh/invalidation. Include its version in responses and cache/audit keys.
 
-The CLI catches broad exceptions, prints an error, and does not consistently return a non-zero exit status. `--question` and `--file` are not mutually exclusive. Batch output has no machine-readable run manifest or aggregate summary.
+### 25. Question input and provider spend have no abuse controls
 
-### 23. Dependency and build reproducibility are weak
+There is no maximum question size, rate limit, quota, concurrency policy, token budget, or cost budget.
 
-Runtime dependencies are unbounded. There is no lock file, supported-version matrix, build verification, or supply-chain scan.
+Add per-principal and deployment controls with safe defaults.
 
-Set tested version ranges and add reproducible development/release environments.
+### 26. Database pool lifecycle is unmanaged
 
-### 24. Test coverage stops at mocked component boundaries
+The Oracle pool is lazy and never closed. Pool sizing is fixed. PostgreSQL will require a parallel but not identical lifecycle.
 
-The unit tests cover useful pipeline paths, prompt formatting, caching, and validation, but alpha needs:
+Move lifecycle into database adapters and FastAPI lifespan hooks with acquisition timeout and metrics.
+
+### 27. Empty-result behavior wastes a provider call
+
+Return a deterministic empty-result explanation instead of invoking an LLM.
+
+### 28. CLI behavior is not automation-friendly
+
+The CLI catches broad exceptions, does not consistently return non-zero status, permits ambiguous arguments, and lacks a machine-readable run manifest.
+
+### 29. Dependencies and supported combinations are not reproducible
+
+Runtime dependencies are unbounded. There is no lock file, supply-chain scan, database-driver extras, provider extras, or compatibility matrix.
+
+Define tested ranges and optional dependencies such as database/provider adapter groups without forcing every SDK into every deployment.
+
+### 30. Test coverage stops at mocked component boundaries
+
+Alpha needs:
 
 - API contract tests,
-- Streamlit/API integration tests,
-- Oracle integration tests against a disposable database,
-- SQL-parser authorization tests,
-- concurrency and timeout tests,
-- prompt-injection and data-exfiltration tests,
-- migration/schema-version tests,
-- provider contract tests with recorded or controlled responses.
+- UI/API integration tests,
+- Oracle integration tests,
+- PostgreSQL integration tests,
+- dialect parser/authorization tests,
+- provider contract tests for OpenAI, Anthropic, and Gemini,
+- provider refusal/throttle/timeout/malformed-output tests,
+- cross-dialect result-equivalence tests,
+- database × provider evaluation runs,
+- concurrency, timeout, prompt-injection, and data-exfiltration tests.
 
-### 25. No continuous integration or release gate is documented
+### 31. No CI compatibility or release gate
 
-Add CI for supported Python versions, linting, typing, unit tests, integration tests, dependency scanning, and package build/install verification. Protect releases with a measurable alpha acceptance suite.
+Add CI for supported Python versions, unit and integration suites, package/install verification, adapter extras, dependency scanning, and a declared compatibility matrix. Releases need measurable safety, correctness, portability, latency, and cost gates.
+
+### 32. Cost visibility and model qualification are absent
+
+The application cannot compare qualified models using token use, latency, and configurable estimated cost.
+
+**Required direction**
+
+- Record normalized usage and latency.
+- Load price assumptions through configuration, never hard-code volatile vendor prices.
+- Establish minimum evaluation thresholds before a model becomes eligible for cost-based routing.
+- Allow different qualified models for SQL generation and explanation.
 
 ---
 
 ## P2 — Post-Alpha Hardening
 
-### 26. Pipeline concerns are tightly coupled
+### 33. Pipeline concerns are tightly coupled
 
-The pipeline directly imports global implementations for cache, database, LLM, prompt, validator, and explanation behavior. Introduce explicit interfaces/dependency injection so policies can be tested and swapped without pervasive patching.
+The pipeline imports global cache, database, provider, prompt, validator, and explanation implementations. Use explicit interfaces and dependency injection.
 
-### 27. Logging configuration mutates the root logger
+### 34. Logging mutates the root logger
 
-The application adds handlers to the root logger and has no rotation or external logging adapter. Move to application-owned logger configuration suitable for multi-worker deployment.
+Move to application-owned logging suitable for multi-worker deployment and external observability backends.
 
-### 28. Validator normalization is regex-based and can alter literals
+### 35. Regex normalization can alter SQL literals
 
-Comment stripping does not understand quoted strings, and a trailing semicolon is removed before validation even though the README describes semicolons as rejected. Replace regex normalization with parser-aware handling and align documentation with actual policy.
+Comment stripping is not quote-aware, and semicolon behavior differs from the README. Replace it with parser-aware normalization.
 
-### 29. No product-level audit record
+### 36. No durable product-level audit record
 
-Logs are not a durable audit model. Add a structured request record containing identity, policy version, schema version, model/prompt version, generated SQL hash, authorization decision, execution metrics, result classification, and final disposition—without storing protected data by default.
+Add a structured audit model containing principal, database deployment/platform, provider/model/route, policy/schema/prompt/adapter versions, SQL hash, authorization decision, resource metrics, result classification, and final disposition—without protected payloads by default.
 
-### 30. No feedback or correction loop
+### 37. No feedback and correction loop
 
-A production-bound assistant needs a way to mark answers correct, incorrect, unsafe, incomplete, or misleading and feed reviewed cases into the evaluation corpus.
+Users and reviewers need to mark answers correct, incorrect, unsafe, incomplete, expensive, or misleading and feed reviewed cases into the evaluation corpus.
+
+### 38. No intermediate query representation
+
+Free-form SQL generation makes cross-dialect equivalence and authorization harder. Explore a constrained query representation compiled by database adapters after the first portable alpha is stable.
+
+### 39. No enterprise provider gateway or local-model strategy
+
+After direct adapters are stable, evaluate Azure OpenAI, Bedrock, Vertex AI, approved OpenAI-compatible gateways, and self-hosted models according to customer governance and cost needs. Do not add them as ad hoc SDK branches.
 
 ---
 
 ## Recommended Resolution Order
 
-1. Disable or isolate cache; add authentication and least-privilege database access.
-2. Replace the regex gate with parsed semantic authorization.
-3. Add execution, row, byte, concurrency, and timeout limits.
-4. Stop error and log leakage; establish stable public error contracts.
-5. Fix API/UI status handling and response-model inconsistencies.
-6. Add versioned schema/prompt/model metadata and full request correlation.
-7. Build the evaluation corpus and Oracle integration suite.
-8. Package and deploy a controlled single-organization alpha.
+1. Disable/isolate cache; add authentication and verified least-privilege database access.
+2. Extract current Oracle behavior behind the database adapter contract.
+3. Extract current OpenAI behavior behind the provider adapter contract.
+4. Replace the regex gate with parsed, dialect-aware semantic authorization.
+5. Add execution row/byte/concurrency/timeout limits and normalized result serialization.
+6. Stop error/log leakage and establish stable public outcomes.
+7. Implement PostgreSQL through the database contract.
+8. Add Anthropic and Google Gemini through the provider contract.
+9. Build Oracle/PostgreSQL integration fixtures and the database × provider evaluation matrix.
+10. Add cost visibility and policy-controlled model/provider routing.
+11. Package and deploy a controlled single-organization alpha.
 
-This ordering intentionally prioritizes **trust before UI expansion**.
+This ordering intentionally prioritizes **security boundaries and clean abstraction before multiplying platforms**, babe.
