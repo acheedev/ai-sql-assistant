@@ -55,11 +55,12 @@ cover/
 *.mo
 *.pot
 
-# # Django stuff:
-# *.log
-# local_settings.py
-# db.sqlite3
-# db.sqlite3-journal
+# Django stuff:
+*.log
+!doc/baselines/pre-refactor/pytest.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
 
 # Flask stuff:
 instance/
@@ -124,7 +125,7 @@ ipython_config.py
 #   in the .venv directory. It is recommended not to include this directory in version control.
 .pixi
 
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm/pdm
 __pypackages__/
 
 # Celery stuff
