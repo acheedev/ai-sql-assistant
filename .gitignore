@@ -210,3 +210,6 @@ src/config.json
 
 # Log output directory
 logs/*.log
+
+# Allow logs under baselines
+!doc/baselines/**/*.log
